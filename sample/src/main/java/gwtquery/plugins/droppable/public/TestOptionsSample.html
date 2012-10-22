@@ -1,0 +1,170 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>GWTQuery Droppable plug-in : Options in action</title>
+<style type="text/css">
+body {
+color: black;
+font-family: Arial Unicode MS, Arial, sans-serif;
+font-size: small;
+}
+
+.draggable {
+width: 120px;
+height: 100px;
+padding: 0.5em;
+margin: 10px;
+border: black solid 1px;
+background: #f6f6f6;
+}
+
+.demo {
+width: 740px;
+/*height: 900px;*/
+margin-right: auto;
+margin-left: auto;
+padding: 10px;
+border: black solid 1px;
+}
+
+.main-droppable {
+width: 250px;
+height: 250px;
+padding: 0.5em;
+margin: 10px;
+background-color: #CCCCCC;
+border: 1px solid #AAAAAA;
+position: relative;
+}
+
+.second-droppable {
+width: 150px;
+height: 150px;
+padding: 0.5em;
+margin: 10px auto 0 auto;
+background-color: #CCCCCC;
+border: 1px solid #AAAAAA;
+position: relative;
+}
+
+.main-green-background{
+    background-color:#65A733; 
+
+}
+
+.main-red-background{
+    background-color:#E91D1B; 
+
+}
+
+.second-green-background{
+    background-color:#65A733; 
+
+}
+
+.second-red-background{
+    background-color:#E91D1B; 
+
+}
+
+.activate-orange-background {
+background-color: #F6A828;
+border: 1px solid #E78F08;
+color: white;
+}
+
+.activate-yellow-background {
+background-color: #FFE45C;
+border: 1px solid #FED22F;
+color: #363636;
+}
+
+.activate-white-background {
+background-color: white;
+border: 1px solid #FED22F;
+color: black;
+}
+
+/*
+ * we have to define hover class 
+ * after the activate class if 
+ * we want to override some css properties
+ */
+.hover-orange-background {
+background-color: #F6A828;
+border: 1px solid #E78F08;
+color: white;
+}
+
+.hover-yellow-background {
+background-color: #FFE45C;
+border: 1px solid #FED22F;
+color: #363636;
+}
+
+.hover-white-background {
+background-color: white;
+border: 1px solid #FED22F;
+color: black;
+}
+
+.setupButton {
+position: absolute;
+bottom: 3px;
+right: 3px;
+}
+
+.logEventPanel {
+padding: 5px;
+border: 1px solid black;
+}
+
+
+</style>
+<script language="javascript" src="TestOptionsSample.nocache.js"></script>
+</head>
+<body>
+<div class="demo">
+<h1>GWTQuery Droppable plug-in : Options in action</h1>
+<ul style="padding: 10px 0px; list-style: none; display: block">          
+    <li style="display: inline;"><a href="../SimpleSample/SimpleSample.html">Examples with DOM elements</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../GwtSimpleSample/GwtSimpleSample.html">Example with GWT widgets</a>&nbsp;|&nbsp;</li>
+</ul>
+<p style="clear: both; padding-top:10px;">This example allows you to play around with most of the options of the
+droppable and draggable plugin. Just click on the setup button to
+configure the concerned draggable or droppable.<br />
+The logging window will display messages in real time to help you more
+clearly understand how events are fired during a drag and drop
+operation.</p>
+<div id="logEventWindow"></div>
+
+<div style="float: right; margin-right: 20px;">
+<div id="mainDroppable1" class="main-droppable">
+<p>I'm the main droppable 1</p>
+<div id="secondDroppable1" class="second-droppable">
+<p>I'm the second droppable 1</p>
+</div>
+</div>
+<div id="mainDroppable2" class="main-droppable">
+<p>I'm the main droppable 2</p>
+<div id="secondDroppable2" class="second-droppable">
+<p>I'm the second droppable 2</p>
+</div>
+</div>
+</div>
+<div style="margin-left: 10px;">
+<div id="draggable1" class="draggable">
+<p>I'm the draggable 1</p>
+</div>
+<div id="draggable2" class="draggable">
+<p>I'm the draggable 2</p>
+</div>
+</div>
+<div style="clear: right; margin-bottom:10px;"></div>
+<a
+    href="http://code.google.com/p/gwtquery-plugins/source/browse/trunk/droppable/sample/src/main/java/gwtquery/plugins/droppable/client/#client/testoptionssample"
+    target="_blank">Java source code</a>
+</div>
+</body>
+</html>

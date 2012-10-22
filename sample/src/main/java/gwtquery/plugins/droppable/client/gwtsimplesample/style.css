@@ -1,0 +1,20 @@
+
+.droppableHover {
+	background-color: #C1DEFD;
+}
+
+.trashBin{
+	width:200px;
+	height:200px;
+	border:solid 1px black;	
+	padding:5px;	
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+
+.resetButton{
+	margin:10px;
+}

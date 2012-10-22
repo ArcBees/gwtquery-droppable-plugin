@@ -1,0 +1,33 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.portlet {
+			margin-top: 5px;
+			background-color: #EEEEEE;
+			border: 1px solid #DDDDDD;
+			width: 190px;
+		}
+		
+		.header {
+			margin: 0.3em;
+			padding-bottom: 4px;
+			padding-left: 0.2em;
+			background-color: #F6A828;
+			border: 1px solid #E78F08;
+			color: #FFFFFF;
+			font-weight: bold;
+		}
+		
+		.content {
+			padding: 0.4em;
+			color: #333333;
+		}
+	</ui:style>
+	
+	<g:HTMLPanel addStyleNames="{style.portlet}">
+		<div ui:field="header" class="{style.header}"></div>
+		<div ui:field="content" class="{style.content}"></div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>  

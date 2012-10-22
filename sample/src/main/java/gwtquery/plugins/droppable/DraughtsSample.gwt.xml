@@ -1,0 +1,5 @@
+<module rename-to='DraughtsSample'>
+	<inherits name='gwtquery.plugins.droppable.Droppable' />
+	<inherits name='com.google.gwt.user.theme.chrome.Chrome' />
+	<entry-point class='gwtquery.plugins.droppable.client.draughtssample.DraughtsSample' />
+</module>  

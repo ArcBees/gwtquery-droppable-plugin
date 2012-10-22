@@ -1,0 +1,113 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>GwtQuery: revert and accept draggable options</title>
+<style type="text/css">
+body {
+		color: black;
+		font-family: Arial Unicode MS, Arial, sans-serif;
+		font-size: small;
+}
+
+.draggable {
+		width: 120px;
+		height: 100px;
+		padding: 0.5em;
+		border: black solid 1px;
+		background: #f6f6f6;
+}
+
+.demo {
+		width: 700px;
+		height: 900px;
+		margin-right: auto;
+		margin-left: auto;
+		padding: 10px;
+		border: black solid 1px;
+}
+
+.droppable {
+		width: 200px;
+		height: 200px;
+		padding: 0.5em;
+		margin: 10px;
+		background-color: #CCCCCC;
+		border: 1px solid #AAAAAA;
+		position: relative;
+		margin-right: 20px;
+}
+
+.orange-background {
+		background-color: #F6A828;
+		border: 1px solid #E78F08;
+		color: white;
+}
+
+.yellow-background {
+		background-color: #FFE45C;
+		border: 1px solid black;
+		color: #363636;
+}
+
+.blue-background {
+		background-color: #C1DEFD;
+		color: white;
+}
+</style>
+<script language="javascript" src="RevertAndAcceptSample.nocache.js"></script>
+</head>
+<body>
+<div class="demo">
+<h1>GWTQuery Droppable plug-in : revert and accept draggable
+options</h1>
+<ul style="padding: 10px 0px; list-style: none; display: block">
+    <li style="display: inline;"><a
+        href="../SimpleSample/SimpleSample.html">Simple example</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a
+        href="../VisualFeedbackSample/VisualFeedbackSample.html">Visual
+    feedback</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a
+        href="../RevertAndAcceptSample/RevertAndAcceptSample.html">Revert
+    and accept options</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a
+        href="../GreedySample/GreedySample.html">the "greedy" option</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a
+        href="../TestOptionsSample/TestOptionsSample.html">The
+    options in action</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a
+        href="../GwtSimpleSample/GwtSimpleSample.html">Examples with
+    GWT widgets</a>&nbsp;|&nbsp;</li>
+</ul>
+On the draggable, the revert option lets you decide whether or not the
+helper returns to its initial position at the end of the drag operation.
+<br/>On the droppable, the accept option lets you specify which element is
+accepted by the droppable.
+</p>
+
+<div style="float: right;">
+<div id="droppable1" class="droppable">
+<p>Drop here ! I accept all draggables.</p>
+</div>
+
+
+<div id="droppable2" class="droppable">
+<p>Drop here! I accept only draggable1.</p>
+</div>
+
+</div>
+<div id="draggable1" class="draggable">
+<p>I'm draggable1 and I revert when I'm dropped</p>
+</div>
+
+<div id="draggable2" class="draggable">
+<p>I'm draggable2 and I revert when I'm not dropped</p>
+</div>
+
+
+<div style="clear: right; margin-bottom: 10px;"></div>
+<a
+    href="http://code.google.com/p/gwtquery-plugins/source/browse/trunk/droppable/sample/src/main/java/gwtquery/plugins/droppable/client/revertandacceptsample/RevertAndAcceptSample.java"
+    target="_blank">Java source code</a></div>
+</body>
+</html>

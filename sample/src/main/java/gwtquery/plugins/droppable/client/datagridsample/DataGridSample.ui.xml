@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:d="urn:import:gwtquery.plugins.droppable.client.gwt">
+
+	<ui:style>
+		.cellTable {
+			height: 400px;
+			width: 600px;
+			border: 1px solid #ccc;
+			text-align: left;
+		}
+		
+		.buttons {
+			margin-left:20px;	
+		}
+	</ui:style>
+
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td valign='top'>
+					<d:DragAndDropDataGrid addStyleNames='{style.cellTable}'
+						pageSize='15' ui:field='dataGrid' />
+				</td>
+				<td valign='top' style='padding-left: 40px;'>
+					<div style='font-size:14px; padding-left:10px; font-weight:bold;'>Contact(s) to delete</div>
+					<d:DroppableWidget ui:field='exportCellList'/>
+					<g:HorizontalPanel addStyleNames='{style.buttons}'>
+						<g:Button ui:field="deleteButton"/>
+						<g:Button ui:field="undoButton"/>
+					</g:HorizontalPanel>
+					
+				</td>
+			</tr>
+			<tr>
+				<td align='center' colspan='2'>
+					<c:SimplePager ui:field='pager' />
+				</td>
+			</tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder>

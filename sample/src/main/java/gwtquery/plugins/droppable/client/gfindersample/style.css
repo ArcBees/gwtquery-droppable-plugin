@@ -1,0 +1,29 @@
+@external .gwt-Label;
+.droppableHover {
+		background-color: #C1DEFD;
+}
+
+.finder {
+		height: 300px;
+		border: 1px solid #ccc;
+}
+
+@sprite .fileCell {
+		gwt-image: "file";
+		float:left;
+}
+
+@sprite .directoryCell {
+		gwt-image: "folder";
+		float:left;
+}
+
+@sprite div.dragHover div.fileCell {
+		gwt-image: "addFile";
+		float:left;
+}
+
+@sprite div.dragHover div.directoryCell {
+		gwt-image: "addFolder";
+		float:left;
+}

@@ -1,0 +1,33 @@
+@external .gwt-Label, .ui-dragging;
+.memberList {
+	overflow: auto;
+	border: 1px solid #CCCCCC;
+	height: 400px;
+	text-align: left;
+	width: 300px;
+	margin: 10px;
+}
+
+.permissionTree {
+	border: 1px solid #CCCCCC;
+	width: 200px;
+	margin: 10px;
+	margin-right: 50px;
+}
+
+.droppableHover {
+	background-color: #C1DEFD;
+}
+
+.gwt-Label {
+	margin-left: 10px;
+	margin-top: 10px;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.dragHelper {
+	border: 1px solid #99CC99;
+	background-color:  #EEFFEE;
+	padding:3px;
+}
