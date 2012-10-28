@@ -1,0 +1,58 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.logEventPanelActionBar {
+				margin-right: 5px;
+				margin-bottom: 5px;
+				float: left;
+		}
+		
+		.logCheckBox {
+				display: block;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td colspan="2">
+					<g:Button ui:field="windowToogleButton" addStyleNames="{style.logEventPanelActionBar}">Hide
+						log window</g:Button>
+					<g:Button ui:field="clearLogButton" addStyleNames="{style.logEventPanelActionBar}">Clear
+						log history</g:Button>
+				</td>
+			</tr>
+			<tr id="logRow">
+				<td>
+					<div
+						style=" height: 200px;width:500px;border:1px solid black;overflow:auto;margin-top:5px;"
+						ui:field="logEventWindow" />
+				</td>
+				<td>
+					<g:Label>Enable logging of :</g:Label>
+					<g:CheckBox ui:field="enableBeforeDragStart"
+						addStyleNames="{style.logCheckBox}">BeforeDragStart events</g:CheckBox>
+					<g:CheckBox ui:field="enableDragStart" addStyleNames="{style.logCheckBox}">DragStart
+						events</g:CheckBox>
+					<g:CheckBox ui:field="enableDragMove" addStyleNames="{style.logCheckBox}">Drag
+						events</g:CheckBox>
+					<g:CheckBox ui:field="enableDragStop" addStyleNames="{style.logCheckBox}">DragStop
+						events</g:CheckBox>
+					<g:CheckBox ui:field="enableActivateDrop" addStyleNames="{style.logCheckBox}">ActivateDroppable
+						events</g:CheckBox>
+					<g:CheckBox ui:field="enableDeactivateDrop"
+						addStyleNames="{style.logCheckBox}">DeactivateDroppable events</g:CheckBox>
+					<g:CheckBox ui:field="enableOverDrop" addStyleNames="{style.logCheckBox}">OverDroppable
+						events</g:CheckBox>
+					<g:CheckBox ui:field="enableOutDrop" addStyleNames="{style.logCheckBox}">OutDroppable
+						events</g:CheckBox>
+					<g:CheckBox ui:field="enableDrop" addStyleNames="{style.logCheckBox}">Drop
+						events</g:CheckBox>
+				</td>
+			</tr>
+		</table>
+
+	</g:HTMLPanel>
+
+</ui:UiBinder>  

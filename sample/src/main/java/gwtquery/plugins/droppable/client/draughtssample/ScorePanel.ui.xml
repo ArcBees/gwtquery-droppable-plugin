@@ -1,0 +1,56 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field='res'
+		type='gwtquery.plugins.droppable.client.draughtssample.resources.DraughtsResources' />
+	<g:DecoratorPanel>
+		<g:HTMLPanel>
+			<table>
+				<tr>
+					<td colspan="2">
+						<g:Label ui:field="infoMessage" styleName="{res.css.infoMessage}">Initializing
+							game...</g:Label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<g:Image resource="{res.redPieceThumb}"></g:Image>
+					</td>
+					<td>
+						<g:Label ui:field="redPieceNbrLabel">0</g:Label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<g:Image resource="{res.redKingThumb}"></g:Image>
+					</td>
+					<td>
+						<g:Label ui:field="redKingNbrLabel">0</g:Label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<g:Image resource="{res.whitePieceThumb}"></g:Image>
+					</td>
+					<td>
+						<g:Label ui:field="whitePieceNbrLabel">0</g:Label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<g:Image resource="{res.whiteKingThumb}"></g:Image>
+					</td>
+					<td>
+						<g:Label ui:field="whiteKingNbrLabel">0</g:Label>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<g:Button ui:field="restartButton">Restart the game</g:Button>
+					</td>
+				</tr>
+			</table>
+		</g:HTMLPanel>
+	</g:DecoratorPanel>
+
+</ui:UiBinder> 

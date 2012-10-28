@@ -1,0 +1,107 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:DecoratorPanel>
+		<g:HTMLPanel>
+			<table cellpadding="2" style="margin:5px;">
+				<tbody>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Drop disabled" />
+						</td>
+						<td>
+							<g:CheckBox ui:field="disabledCheckBox" />
+						</td>
+						<td>
+							<g:HTML text="Disable the drop functionnality on this element" />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Greddy options" />
+						</td>
+						<td>
+							<g:CheckBox ui:field="greedyCheckBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="When set to true this option prevents the propagation of the drop event from a child droppable to its parent droppable." />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Droppable scope" />
+						</td>
+						<td>
+							<g:TextBox ui:field="scopeBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="Used to group sets of draggable and droppable items, in addition to droppable's accept option. A droppable will accept any draggable with the same scope value as itself." />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Drop tolerance" />
+						</td>
+						<td>
+							<g:ListBox ui:field="toleranceListBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="Specifies the mode to use for testing whether a acceptable draggable is dragged 'over' a droppable. " />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Accept options" />
+						</td>
+						<td>
+							<g:ListBox ui:field="acceptFunctionListBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="This option specify which elements can be dropped on this droppable." />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Active class" />
+						</td>
+						<td>
+							<g:ListBox ui:field="activeClassListBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="Css class will be added to the droppable while an acceptable draggable is being dragged." />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Hover class" />
+						</td>
+						<td>
+							<g:ListBox ui:field="hoverClassListBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="Css class that will be added to the droppable while an acceptable draggable is dragged over it." />
+						</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Draggable hover class" />
+						</td>
+						<td>
+							<g:ListBox ui:field="draggableHoverClassListBox" />
+						</td>
+						<td>
+							<g:HTML
+								text="Css class will be added to an acceptable draggable while this one is dragged over this droppable." />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</g:HTMLPanel>
+	</g:DecoratorPanel>
+</ui:UiBinder>  

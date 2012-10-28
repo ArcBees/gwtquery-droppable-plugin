@@ -1,0 +1,12 @@
+.placeHolder{
+    border:1px dashed black;
+    margin-top: 5px;
+}
+
+        
+.sortablePanel{
+	padding-bottom: 100px;
+	width: 200px;
+	float: left;
+	margin-left: 10px;
+}

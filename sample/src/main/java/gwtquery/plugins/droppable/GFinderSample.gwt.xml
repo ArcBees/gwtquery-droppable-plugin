@@ -1,0 +1,5 @@
+<module rename-to='GFinderSample'>
+	<inherits name='gwtquery.plugins.droppable.Droppable' />
+	<inherits name='com.google.gwt.user.theme.standard.Standard' />
+	<entry-point class='gwtquery.plugins.droppable.client.gfindersample.GFinder' />
+</module>  

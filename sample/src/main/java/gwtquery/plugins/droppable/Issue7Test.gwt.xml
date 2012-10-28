@@ -1,0 +1,5 @@
+<module rename-to='Issue7Test'>
+	<inherits name='gwtquery.plugins.droppable.Droppable' />
+	<inherits name='com.google.gwt.user.theme.chrome.Chrome' />
+	<entry-point class='gwtquery.plugins.droppable.client.miscellanious.Issue7Test' />
+</module>  

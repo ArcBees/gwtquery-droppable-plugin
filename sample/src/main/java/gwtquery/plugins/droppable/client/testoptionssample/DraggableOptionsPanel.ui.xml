@@ -1,0 +1,176 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:DecoratorPanel>
+		<g:HTMLPanel>
+			<table cellpadding="2" style="margin:5px;">
+				<tbody>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Drag disabled" />
+						</td>
+						<td>
+							<g:CheckBox ui:field="disabledCheckBox" />
+						</td>
+						<td>Enable or disable the drag functionality</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Helper type" />
+						</td>
+						<td>
+							<g:ListBox ui:field="helperListBox" />
+						</td>
+						<td>Element to use as dragging display</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Helper opacity" />
+						</td>
+						<td>
+							<g:TextBox ui:field="opacityBox" />
+						</td>
+						<td>Opacity of the helper during the drag. Must be a number
+							between 0 and 1</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Handle enabled" />
+						</td>
+						<td>
+							<g:CheckBox ui:field="handleCheckBox" />
+						</td>
+						<td>Restricts drag start when the user clicks on the handle
+							element.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Cursor" />
+						</td>
+						<td>
+							<g:ListBox ui:field="cursorListBox" />
+						</td>
+						<td>Cursor to use during the drag.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="CursorAt" />
+						</td>
+						<td>
+							<g:ListBox ui:field="cursorAtListBox" />
+						</td>
+						<td>Moves the dragging helper so the cursor always appears to drag
+							from the selected position.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Axis constraint" />
+						</td>
+						<td>
+							<g:ListBox ui:field="axisListBox" />
+						</td>
+						<td>Constrains dragging to either the horizontal or vertical axis.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Containement constraint" />
+						</td>
+						<td>
+							<g:ListBox ui:field="containmentListBox" />
+						</td>
+						<td>Constrains dragging to within the bounds of the specified
+							region or element.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Element snapping" />
+						</td>
+						<td>
+							<g:ListBox ui:field="snapListbox" />
+						</td>
+						<td>The draggable will snap to the edges of the selected elements
+							when near an edge of the element.</td>
+
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Grid snapping" />
+						</td>
+						<td>
+							<g:ListBox ui:field="gridListBox" />
+						</td>
+						<td>Snaps the dragging helper to a grid.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Revert draggable" />
+						</td>
+						<td>
+							<g:ListBox ui:field="revertListBox" />
+						</td>
+						<td>Determine if the helper will return to its starts position
+							when dragging stops.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Revert duration" />
+						</td>
+						<td>
+							<g:TextBox ui:field="revertDurationTextBox" />
+						</td>
+						<td>The duration of the revert animation, in milliseconds.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Automatic scroll enabled" />
+						</td>
+						<td>
+							<g:CheckBox ui:field="scrollCheckBox" />
+						</td>
+						<td>Define if the container scrolls while dragging.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Scroll sensitivity" />
+						</td>
+						<td>
+							<g:TextBox ui:field="scrollSensivityBox" />
+						</td>
+						<td>Distance in pixels from the edge of the container after which
+							the container should scroll.</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Scroll speed" />
+						</td>
+						<td>
+							<g:TextBox ui:field="scrollSpeedBox" />
+						</td>
+						<td>The speed at which the container should scroll</td>
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Delay before start drag" />
+						</td>
+						<td>
+							<g:TextBox ui:field="delayBox" />
+						</td>
+						<td>Time in milliseconds to define when the drag should start. </td>
+
+					</tr>
+					<tr style="vertical-align:top;">
+						<td>
+							<g:HTML text="Distance before start drag" />
+						</td>
+						<td>
+							<g:TextBox ui:field="distanceBox" />
+						</td>
+						<td>Distance in pixels to define when the drag should start. </td>
+					</tr>
+
+				</tbody>
+			</table>
+		</g:HTMLPanel>
+	</g:DecoratorPanel>
+</ui:UiBinder> 
