@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Test issue 7 : Add the possibility to re-execute caching of droppables during drag operation</title>
+<style type="text/css">
+
+.draggable {
+    width: 120px;
+    height: 100px;
+    padding: 0.5em;
+    border: black solid 1px;
+    background: #f6f6f6;
+}
+
+.demo {
+    width: 700px;
+    height: 900px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 10px;
+    border: black solid 1px;
+}
+
+.droppable {
+    width: 300px;
+    height: 300px;
+    padding: 0.5em;
+    margin: 10px;
+    background-color: #CCCCCC;
+    border: 1px solid #AAAAAA;
+    position:relative;
+    float: right;
+     margin-right: 20px;
+}
+
+.orange-background {
+    background-color: #F6A828;
+    border: 1px solid #E78F08;
+    color: white;
+}
+
+</style>
+<script language="javascript" src="Issue7Test.nocache.js"></script>
+</head>
+
+<body>
+
+
+<div class="demo">
+
+
+<h1>Drag and drop plug-in : Drag and drop with CellTree</h1>
+
+
+<p style="clear: both; padding-top:10px;"><a href="http://code.google.com/p/gwtquery-plugins/issues/detail?id=7">Issue 7</a></p>
+<div id="draggable" class="draggable">I'm the draggable</div>
+<div id="droppable1" class="droppable">I'm the droppable 1</div>
+<div id="droppable2" class="droppable" style="display: none;">I'm the droppable 2</div>
+<div id="droppable3" class="droppable" style="display: none;">I'm the droppable 3</div>
+<a href="http://code.google.com/p/gwtquery-plugins/source/browse/trunk/droppable/plugin/src/test/java/gwtquery/plugins/droppable/client/permissionmanagersample" target="_blank">Java source code</a></div>
+</body>
+</html>
