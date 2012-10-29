@@ -16,14 +16,36 @@
 package gwtquery.plugins.droppable.client.gwt;
 
 import static com.google.gwt.query.client.GQuery.$;
+import gwtquery.plugins.draggable.client.DraggableOptions;
+import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent;
+import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent.BeforeDragStartEventHandler;
+import gwtquery.plugins.draggable.client.events.DragEvent;
+import gwtquery.plugins.draggable.client.events.DragEvent.DragEventHandler;
+import gwtquery.plugins.draggable.client.events.DragStartEvent;
+import gwtquery.plugins.draggable.client.events.DragStartEvent.DragStartEventHandler;
+import gwtquery.plugins.draggable.client.events.DragStopEvent;
+import gwtquery.plugins.draggable.client.events.DragStopEvent.DragStopEventHandler;
+import gwtquery.plugins.droppable.client.DroppableOptions;
+import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent;
+import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent.ActivateDroppableEventHandler;
+import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent;
+import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent.DeactivateDroppableEventHandler;
+import gwtquery.plugins.droppable.client.events.DropEvent;
+import gwtquery.plugins.droppable.client.events.DropEvent.DropEventHandler;
+import gwtquery.plugins.droppable.client.events.OutDroppableEvent;
+import gwtquery.plugins.droppable.client.events.OutDroppableEvent.OutDroppableEventHandler;
+import gwtquery.plugins.droppable.client.events.OverDroppableEvent;
+import gwtquery.plugins.droppable.client.events.OverDroppableEvent.OverDroppableEventHandler;
+
+import java.util.List;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.cellview.client.CellBrowser;
@@ -32,29 +54,6 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.view.client.TreeViewModel.NodeInfo;
-
-import gwtquery.plugins.draggable.client.DraggableOptions;
-import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent;
-import gwtquery.plugins.draggable.client.events.DragEvent;
-import gwtquery.plugins.draggable.client.events.DragStartEvent;
-import gwtquery.plugins.draggable.client.events.DragStopEvent;
-import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent.BeforeDragStartEventHandler;
-import gwtquery.plugins.draggable.client.events.DragEvent.DragEventHandler;
-import gwtquery.plugins.draggable.client.events.DragStartEvent.DragStartEventHandler;
-import gwtquery.plugins.draggable.client.events.DragStopEvent.DragStopEventHandler;
-import gwtquery.plugins.droppable.client.DroppableOptions;
-import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent;
-import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent;
-import gwtquery.plugins.droppable.client.events.DropEvent;
-import gwtquery.plugins.droppable.client.events.OutDroppableEvent;
-import gwtquery.plugins.droppable.client.events.OverDroppableEvent;
-import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent.ActivateDroppableEventHandler;
-import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent.DeactivateDroppableEventHandler;
-import gwtquery.plugins.droppable.client.events.DropEvent.DropEventHandler;
-import gwtquery.plugins.droppable.client.events.OutDroppableEvent.OutDroppableEventHandler;
-import gwtquery.plugins.droppable.client.events.OverDroppableEvent.OverDroppableEventHandler;
-
-import java.util.List;
 
 /**
  * This cell browser allows you to define draggable and or droppable cells by
@@ -222,7 +221,12 @@ public class DragAndDropCellBrowser extends CellBrowser {
 
   public <T> DragAndDropCellBrowser(TreeViewModel viewModel, T rootValue,
       Resources resources) {
-    super(viewModel, rootValue, resources);
+    super(new Builder<T>(viewModel, rootValue).resources(resources));
+  }
+  
+  protected <T> DragAndDropCellBrowser(Builder<T> builder) {
+	  super(builder);
+	  
   }
 
   /**
@@ -329,11 +333,22 @@ public class DragAndDropCellBrowser extends CellBrowser {
     DragAndDropBrowserCellList<C> display = new DragAndDropBrowserCellList<C>(
         nodeInfo.getCell(), level, nodeInfo.getProvidesKey());
 
+    if (getLoadingIndicator() != null) {
+        display.setLoadingIndicator(getLoadingIndicator());
+    }
+    if (getPageSize() != null) {
+        display.setPageSize(getPageSize());
+    }
+      
     display.setValueUpdater(nodeInfo.getValueUpdater());
 
-    // Set the keyboard selection policy, but never disable it.
-    KeyboardSelectionPolicy keyboardPolicy = getKeyboardSelectionPolicyForLists();
-    display.setKeyboardSelectionPolicy(keyboardPolicy);
+    /*
+     * A CellBrowser has a single keyboard selection policy and multiple lists,
+     * so we're not using the selection policy in each list. Leave them on all
+     * the time because we use keyboard selection to keep track of which item is
+     * open (selected) at each level.
+     */
+    display.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
     /*
      * Drag and drop stuff

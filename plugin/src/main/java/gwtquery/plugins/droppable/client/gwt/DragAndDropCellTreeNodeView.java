@@ -17,14 +17,14 @@ package gwtquery.plugins.droppable.client.gwt;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import com.google.gwt.core.client.GWT;
+import java.util.List;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.cellview.client.CellTree.CellTreeMessages;
 import com.google.gwt.user.cellview.client.CellTreeNodeView;
+import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.TreeViewModel.NodeInfo;
-
-import java.util.List;
 
 /**
  * A view of a tree node awith drag and drop support.
@@ -59,20 +59,20 @@ class DragAndDropCellTreeNodeView<T> extends CellTreeNodeView<T> {
       }
 
       @Override
-      public void replaceAllChildren(List<C> values, SafeHtml html,
-          boolean stealFocus) {
+      public void replaceAllChildren(List<C> values, SelectionModel<? super C> selectionModel,
+              boolean stealFocus) {
         // first clean all cell
         cleanAllCell();
 
-        super.replaceAllChildren(values, html, stealFocus);
+        super.replaceAllChildren(values, selectionModel, stealFocus);
 
         // add drag and drop behaviour
         addDragAndDropBehaviour(values, 0);
       }
 
       @Override
-      public void replaceChildren(List<C> values, int start, SafeHtml html,
-          boolean stealFocus) {
+      public void replaceChildren(List<C> values, int start,
+              SelectionModel<? super C> selectionModel, boolean stealFocus) {
         // clean cell before they are replaced
         int end = start + values.size();
         for (int rowIndex = start; rowIndex < end; rowIndex++) {
@@ -80,7 +80,7 @@ class DragAndDropCellTreeNodeView<T> extends CellTreeNodeView<T> {
           DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
         }
 
-        super.replaceChildren(values, start, html, stealFocus);
+        super.replaceChildren(values, start, selectionModel, stealFocus);
 
         // add drag and drop behaviour
         addDragAndDropBehaviour(values, start);
@@ -159,6 +159,7 @@ class DragAndDropCellTreeNodeView<T> extends CellTreeNodeView<T> {
   }
 
   private DragAndDropCellTree tree;
+  private CellTreeMessages messages;
 
   /**
    * Construct a {@link DragAndDropCellTreeNodeView}.
@@ -176,15 +177,16 @@ class DragAndDropCellTreeNodeView<T> extends CellTreeNodeView<T> {
    */
   public DragAndDropCellTreeNodeView(final DragAndDropCellTree tree,
       final CellTreeNodeView<?> parent, NodeInfo<T> parentNodeInfo,
-      Element elem, T value) {
-    super(tree, parent, parentNodeInfo, elem, value);
+      Element elem, T value,  CellTreeMessages messages) {
+    super(tree, parent, parentNodeInfo, elem, value, messages);
+    this.messages = messages;
     this.tree = tree;
   }
 
   protected <C> CellTreeNodeView<C> createTreeNodeView(NodeInfo<C> nodeInfo,
       Element childElem, C childValue, Object viewData) {
     return new DragAndDropCellTreeNodeView<C>(tree, this, nodeInfo, childElem,
-        childValue);
+        childValue, messages);
   }
 
   protected DragAndDropCellTree getTree() {

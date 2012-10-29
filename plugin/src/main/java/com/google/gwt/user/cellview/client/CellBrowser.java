@@ -15,13 +15,11 @@
  */
 package com.google.gwt.user.cellview.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -60,10 +58,14 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.HasRows;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.view.client.TreeViewModel.NodeInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A "browsable" view of a tree in which only a single node per level may be
@@ -179,30 +181,29 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   }
 
   interface Template extends SafeHtmlTemplates {
-	  @Template("<div onclick=\"\" __idx=\"{0}\" class=\"{1}\""
+    @Template("<div onclick=\"\" __idx=\"{0}\" class=\"{1}\""
         + " style=\"{2}position:relative;outline:none;\">{3}<div>{4}</div></div>")
-	  SafeHtml div(int idx, String classes, SafeStyles padding, SafeHtml imageHtml,
+    SafeHtml div(int idx, String classes, SafeStyles padding, SafeHtml imageHtml,
         SafeHtml cellContents);
 
-	  @Template("<div onclick=\"\" __idx=\"{0}\" class=\"{1}\""
-			  + " style=\"{2}position:relative;outline:none;\" tabindex=\"{3}\">{4}<div>{5}</div></div>")
-	  SafeHtml divFocusable(int idx, String classes, SafeStyles padding, int tabIndex,
-			  SafeHtml imageHtml, SafeHtml cellContents);
+    @Template("<div onclick=\"\" __idx=\"{0}\" class=\"{1}\""
+        + " style=\"{2}position:relative;outline:none;\" tabindex=\"{3}\">{4}<div>{5}</div></div>")
+    SafeHtml divFocusable(int idx, String classes, SafeStyles padding, int tabIndex,
+        SafeHtml imageHtml, SafeHtml cellContents);
 
-	  @Template("<div onclick=\"\" __idx=\"{0}\" class=\"{1}\""
-			  + " style=\"{2}position:relative;outline:none;\" tabindex=\"{3}\" accessKey=\"{4}\">{5}<div>{6}</div></div>")
-	  SafeHtml divFocusableWithKey(int idx, String classes, SafeStyles padding, int tabIndex,
-			  char accessKey, SafeHtml imageHtml, SafeHtml cellContents);
-	  
-	  @Template("<div style=\"{0}position:absolute;\">{1}</div>")
-	  SafeHtml imageWrapper(SafeStyles css, SafeHtml image);
+    @Template("<div onclick=\"\" __idx=\"{0}\" class=\"{1}\""
+        + " style=\"{2}position:relative;outline:none;\" tabindex=\"{3}\" accessKey=\"{4}\">{5}<div>{6}</div></div>")
+    SafeHtml divFocusableWithKey(int idx, String classes, SafeStyles padding, int tabIndex,
+        char accessKey, SafeHtml imageHtml, SafeHtml cellContents);
+
+    @Template("<div style=\"{0}position:absolute;\">{1}</div>")
+    SafeHtml imageWrapper(SafeStyles css, SafeHtml image);
   }
 
   /**
    * A custom version of cell list used by the browser. Visible for testing.
    * 
-   * @param <T>
-   *          the data type of list items
+   * @param <T> the data type of list items
    */
   protected class BrowserCellList<T> extends CellList<T> {
 
@@ -215,6 +216,11 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
      * The key of the currently focused item.
      */
     private Object focusedKey;
+
+    /**
+     * The currently selected value in this list.
+     */
+    private T selectedValue;
 
     /**
      * A boolean indicating that this widget is no longer used.
@@ -231,10 +237,16 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
      */
     private final Element tmpElem = Document.get().createDivElement();
 
-    public BrowserCellList(final Cell<T> cell, int level,
-        ProvidesKey<T> keyProvider) {
+    public BrowserCellList(final Cell<T> cell, int level, ProvidesKey<T> keyProvider) {
       super(cell, cellListResources, keyProvider);
       this.level = level;
+    }
+
+    protected void deselectValue() {
+      SelectionModel<? super T> selectionModel = getSelectionModel();
+      if (selectionModel != null && selectedValue != null) {
+        selectionModel.setSelected(selectedValue, false);
+      }
     }
 
     @Override
@@ -249,8 +261,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
        * track the open node, but we want to suppress keyboard navigation if the
        * user disables it.
        */
-      return KeyboardSelectionPolicy.DISABLED == CellBrowser.this
-          .getKeyboardSelectionPolicy()
+      return KeyboardSelectionPolicy.DISABLED == CellBrowser.this.getKeyboardSelectionPolicy()
           || super.isKeyboardNavigationSuppressed();
     }
 
@@ -260,33 +271,32 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
 
       // Handle keyboard navigation between lists.
       String eventType = event.getType();
-      if ("keydown".equals(eventType) && !isKeyboardNavigationSuppressed()) {
+      if (BrowserEvents.KEYDOWN.equals(eventType) && !isKeyboardNavigationSuppressed()) {
         int keyCode = event.getKeyCode();
         switch (keyCode) {
-        case KeyCodes.KEY_LEFT:
-          if (LocaleInfo.getCurrentLocale().isRTL()) {
-            keyboardNavigateDeep();
-          } else {
-            keyboardNavigateShallow();
-          }
-          return;
-        case KeyCodes.KEY_RIGHT:
-          if (LocaleInfo.getCurrentLocale().isRTL()) {
-            keyboardNavigateShallow();
-          } else {
-            keyboardNavigateDeep();
-          }
-          return;
+          case KeyCodes.KEY_LEFT:
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+              keyboardNavigateDeep();
+            } else {
+              keyboardNavigateShallow();
+            }
+            return;
+          case KeyCodes.KEY_RIGHT:
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+              keyboardNavigateShallow();
+            } else {
+              keyboardNavigateDeep();
+            }
+            return;
         }
       }
     }
 
     @Override
-    protected void renderRowValues(SafeHtmlBuilder sb, List<T> values,
-        int start, SelectionModel<? super T> selectionModel) {
+    protected void renderRowValues(SafeHtmlBuilder sb, List<T> values, int start,
+        SelectionModel<? super T> selectionModel) {
       Cell<T> cell = getCell();
-      String keyboardSelectedItem = " "
-          + style.cellBrowserKeyboardSelectedItem();
+      String keyboardSelectedItem = " " + style.cellBrowserKeyboardSelectedItem();
       String selectedItem = " " + style.cellBrowserSelectedItem();
       String openItem = " " + style.cellBrowserOpenItem();
       String evenItem = style.cellBrowserEvenItem();
@@ -296,8 +306,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
       int end = start + length;
       for (int i = start; i < end; i++) {
         T value = values.get(i - start);
-        boolean isSelected = selectionModel == null ? false : selectionModel
-            .isSelected(value);
+        boolean isSelected = selectionModel == null ? false : selectionModel.isSelected(value);
         boolean isOpen = isOpen(i);
         StringBuilder classesBuilder = new StringBuilder();
         classesBuilder.append(i % 2 == 0 ? evenItem : oddItem);
@@ -321,10 +330,9 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
         } else {
           image = closedImageHtml;
         }
-        
-        SafeStyles padding =
-        		SafeStylesUtils.fromTrustedString("padding-right: " + imageWidth + "px;");
 
+        SafeStyles padding =
+            SafeStylesUtils.fromTrustedString("padding-right: " + imageWidth + "px;");
         if (i == keyboardSelectedRow) {
           // This is the focused item.
           if (isFocused) {
@@ -332,15 +340,15 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
           }
           char accessKey = getAccessKey();
           if (accessKey != 0) {
-        	  sb.append(template.divFocusableWithKey(i, classesBuilder.toString(), padding,
-        			  getTabIndex(), getAccessKey(), image, cellBuilder.toSafeHtml()));
+            sb.append(template.divFocusableWithKey(i, classesBuilder.toString(), padding,
+                getTabIndex(), getAccessKey(), image, cellBuilder.toSafeHtml()));
           } else {
-        	  sb.append(template.divFocusable(i, classesBuilder.toString(), padding, getTabIndex(),
-        			  image, cellBuilder.toSafeHtml()));
+            sb.append(template.divFocusable(i, classesBuilder.toString(), padding, getTabIndex(),
+                image, cellBuilder.toSafeHtml()));
           }
         } else {
-        	sb.append(template.div(i, classesBuilder.toString(), padding, image, cellBuilder
-        			.toSafeHtml()));
+          sb.append(template.div(i, classesBuilder.toString(), padding, image, cellBuilder
+              .toSafeHtml()));
         }
       }
 
@@ -349,8 +357,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     }
 
     @Override
-    protected void setKeyboardSelected(int index, boolean selected,
-        boolean stealFocus) {
+    protected void setKeyboardSelected(int index, boolean selected, boolean stealFocus) {
       super.setKeyboardSelected(index, selected, stealFocus);
       if (!isRowWithinBounds(index)) {
         return;
@@ -372,11 +379,35 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
         image = closedImageHtml;
       }
       tmpElem.setInnerHTML(image.asString());
-      elem.replaceChild(tmpElem.getFirstChildElement(), elem
-          .getFirstChildElement());
+      elem.replaceChild(tmpElem.getFirstChildElement(), elem.getFirstChildElement());
 
       // Update the open state.
       updateChildState(this, true);
+    }
+
+    /**
+     * Set the selected value in this list. If there is already a selected
+     * value, the old value will be deselected.
+     * 
+     * @param value the selected value
+     */
+    protected void setSelectedValue(T value) {
+      // Early exit if the value is unchanged.
+      Object oldKey = getValueKey(selectedValue);
+      Object newKey = getValueKey(value);
+      if (newKey != null && newKey.equals(oldKey)) {
+        return;
+      }
+
+      // Deselect the current value. Only one thing is selected at a time.
+      deselectValue();
+
+      // Select the new value.
+      SelectionModel<? super T> selectionModel = getSelectionModel();
+      if (selectionModel != null) {
+        selectedValue = value;
+        selectionModel.setSelected(selectedValue, true);
+      }
     }
 
     /**
@@ -384,8 +415,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
      * the keyboard selected index, there is an associated keyboard selected
      * value, and the value is not a leaf.
      * 
-     * @param index
-     *          the index
+     * @param index the index
      * @return true if open, false if not
      */
     private boolean isOpen(int index) {
@@ -429,8 +459,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   /**
    * A node in the tree.
    * 
-   * @param <C>
-   *          the data type of the children of the node
+   * @param <C> the data type of the children of the node
    */
   class TreeNodeImpl<C> implements TreeNode {
     private final BrowserCellList<C> display;
@@ -442,84 +471,87 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     /**
      * Construct a new {@link TreeNodeImpl}.
      * 
-     * @param nodeInfo
-     *          the nodeInfo for the children nodes
-     * @param value
-     *          the value of the node
-     * @param display
-     *          the display associated with the node
-     * @param widget
-     *          the widget that wraps the display
+     * @param nodeInfo the nodeInfo for the children nodes
+     * @param value the value of the node
+     * @param display the display associated with the node
+     * @param widget the widget that wraps the display
      */
-    public TreeNodeImpl(final NodeInfo<C> nodeInfo, Object value,
-        final BrowserCellList<C> display, Widget widget) {
+    public TreeNodeImpl(final NodeInfo<C> nodeInfo, Object value, final BrowserCellList<C> display,
+        Widget widget) {
       this.display = display;
       this.nodeInfo = nodeInfo;
       this.value = value;
       this.widget = widget;
 
       // Trim to the current level if the open node disappears.
-      valueChangeHandler = display
-          .addValueChangeHandler(new ValueChangeHandler<List<C>>() {
-            public void onValueChange(ValueChangeEvent<List<C>> event) {
-              Object focusedKey = display.focusedKey;
-              if (focusedKey != null) {
-                boolean stillExists = false;
-                List<C> displayValues = event.getValue();
-                for (C displayValue : displayValues) {
-                  if (focusedKey.equals(display.getValueKey(displayValue))) {
-                    stillExists = true;
-                    break;
-                  }
-                }
-                if (!stillExists) {
-                  trimToLevel(display.level);
-                }
+      valueChangeHandler = display.addValueChangeHandler(new ValueChangeHandler<List<C>>() {
+        @Override
+        public void onValueChange(ValueChangeEvent<List<C>> event) {
+          Object focusedKey = display.focusedKey;
+          if (focusedKey != null) {
+            boolean stillExists = false;
+            List<C> displayValues = event.getValue();
+            for (C displayValue : displayValues) {
+              if (focusedKey.equals(display.getValueKey(displayValue))) {
+                stillExists = true;
+                break;
               }
             }
-          });
+            if (!stillExists) {
+              trimToLevel(display.level);
+            }
+          }
+        }
+      });
     }
 
+    @Override
     public int getChildCount() {
       assertNotDestroyed();
       return display.getPresenter().getVisibleItemCount();
     }
 
+    @Override
     public C getChildValue(int index) {
       assertNotDestroyed();
       checkChildBounds(index);
       return display.getVisibleItem(index);
     }
 
+    @Override
     public int getIndex() {
       assertNotDestroyed();
       TreeNodeImpl<?> parent = getParent();
       return (parent == null) ? 0 : parent.getOpenIndex();
     }
 
+    @Override
     public TreeNodeImpl<?> getParent() {
       assertNotDestroyed();
       return getParentImpl();
     }
 
+    @Override
     public Object getValue() {
       return value;
     }
 
+    @Override
     public boolean isChildLeaf(int index) {
       assertNotDestroyed();
       checkChildBounds(index);
       return isLeaf(getChildValue(index));
     }
 
+    @Override
     public boolean isChildOpen(int index) {
       assertNotDestroyed();
       checkChildBounds(index);
-      return (display.focusedKey == null || !display.isFocusedOpen) ? false
-          : display.focusedKey
-              .equals(display.getValueKey(getChildValue(index)));
+      return (display.focusedKey == null || !display.isFocusedOpen) ? false : display.focusedKey
+          .equals(display.getValueKey(getChildValue(index)));
     }
 
+    @Override
     public boolean isDestroyed() {
       if (nodeInfo != null) {
         /*
@@ -534,10 +566,12 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
       return nodeInfo == null;
     }
 
+    @Override
     public TreeNode setChildOpen(int index, boolean open) {
       return setChildOpen(index, open, true);
     }
 
+    @Override
     public TreeNode setChildOpen(int index, boolean open, boolean fireEvents) {
       assertNotDestroyed();
       checkChildBounds(index);
@@ -585,10 +619,8 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     /**
      * Check the child bounds.
      * 
-     * @param index
-     *          the index of the child
-     * @throws IndexOutOfBoundsException
-     *           if the child is not in range
+     * @param index the index of the child
+     * @throws IndexOutOfBoundsException if the child is not in range
      */
     private void checkChildBounds(int index) {
       if ((index < 0) || (index >= getChildCount())) {
@@ -602,6 +634,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     private void destroy() {
       display.isDestroyed = true;
       valueChangeHandler.removeHandler();
+      display.deselectValue();
       display.setSelectionModel(null);
       nodeInfo.unsetDataDisplay();
       getSplitLayoutPanel().remove(widget);
@@ -641,10 +674,12 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
       this.style = new CellListStyleImpl(delegate.cellBrowserStyle());
     }
 
+    @Override
     public ImageResource cellListSelectedBackground() {
       return delegate.cellBrowserSelectedBackground();
     }
 
+    @Override
     public CellList.Style cellListStyle() {
       return style;
     }
@@ -662,35 +697,43 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
       this.delegate = delegate;
     }
 
+    @Override
     public String cellListEvenItem() {
       return delegate.cellBrowserEvenItem();
     }
 
+    @Override
     public String cellListKeyboardSelectedItem() {
       return delegate.cellBrowserKeyboardSelectedItem();
     }
 
+    @Override
     public String cellListOddItem() {
       return delegate.cellBrowserOddItem();
     }
 
+    @Override
     public String cellListSelectedItem() {
       return delegate.cellBrowserSelectedItem();
     }
 
+    @Override
     public String cellListWidget() {
       // Do not apply any style to the list itself.
       return null;
     }
 
+    @Override
     public boolean ensureInjected() {
       return delegate.ensureInjected();
     }
 
+    @Override
     public String getName() {
       return delegate.getName();
     }
 
+    @Override
     public String getText() {
       return delegate.getText();
     }
@@ -738,6 +781,114 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
         onComplete();
       }
     }
+  }
+
+  /**
+   * Pager factory used to create pagers for each {@link CellList} of the
+   * {@link CellBrowser}.
+   */
+  public static interface PagerFactory {
+    AbstractPager create(HasRows display);
+  }
+
+  /**
+   * Default pager.
+   */
+  private static class PageSizePagerFactory implements PagerFactory {
+    @Override
+    public AbstractPager create(HasRows display) {
+      return new PageSizePager(display.getVisibleRange().getLength());
+    }
+  }
+
+  /**
+   * Builder object to create CellBrowser.
+   *
+   * @param <T> the type of data in the root node
+   */
+  public static class Builder<T> {
+    private final TreeViewModel viewModel;
+    private final T rootValue;
+    private Widget loadingIndicator;
+    private PagerFactory pagerFactory = new PageSizePagerFactory();
+    private Integer pageSize;
+    private Resources resources;
+
+    /**
+    * Construct a new {@link Builder}.
+    *
+    * @param viewModel the {@link TreeViewModel} that backs the tree
+    * @param rootValue the hidden root value of the tree
+    */
+    public Builder(TreeViewModel viewModel, T rootValue) {
+      this.viewModel = viewModel;
+      this.rootValue = rootValue;
+    }
+
+    /**
+     * Creates a new {@link CellBrowser}.
+     *
+     * @return new {@link CellBrowser}
+     */
+    public CellBrowser build() {
+      return new CellBrowser(this);
+    }
+
+    /**
+     * Set the widget to display when the data is loading.
+     *
+     * @param widget the loading indicator
+     * @return this
+     */
+    public Builder<T> loadingIndicator(Widget widget) {
+      this.loadingIndicator = widget;
+      return this;
+    }
+
+    /**
+     * Set the pager factory used to create pagers for each {@link CellList}.
+     * Defaults to {@link PageSizePagerFactory} if not set.
+     *
+     * Can be set to null if no pager should be used. You should also set pageSize
+     * big enough to hold all your data then.
+     *
+     * @param factory the pager factory
+     * @return this
+     */
+    public Builder<T> pagerFactory(PagerFactory factory) {
+      this.pagerFactory = factory;
+      return this;
+    }
+
+    /**
+     * Set the pager size for each {@link CellList}.
+     *
+     * @param pageSize the page size
+     * @return this
+     */
+    public Builder<T> pageSize(int pageSize) {
+      this.pageSize = pageSize;
+      return this;
+    }
+
+    /**
+     * Set resources used for images.
+     *
+     * @param resources the {@link Resources} used for images
+     * @return this
+     */
+    public Builder<T> resources(Resources resources) {
+      this.resources = resources;
+      return this;
+    }
+
+    private Resources resources() {
+      if (resources == null) {
+        resources = getDefaultResources();
+      }
+      return resources;
+    }
+
   }
 
   private static Resources DEFAULT_RESOURCES;
@@ -793,6 +944,11 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   private boolean isAnimationEnabled;
 
   /**
+   * Widget passed to CellLists.
+   */
+  private final Widget loadingIndicator;
+
+  /**
    * The minimum width of new columns.
    */
   private int minWidth;
@@ -801,6 +957,16 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
    * The HTML used to generate the open image.
    */
   private final SafeHtml openImageHtml;
+
+  /**
+   * Factory used to create pagers for CellLists.
+   */
+  private final PagerFactory pagerFactory;
+
+  /**
+   * Page size for CellLists.
+   */
+  private final Integer pageSize;
 
   /**
    * The element used to maintain the scrollbar when columns are removed.
@@ -815,38 +981,42 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   /**
    * Construct a new {@link CellBrowser}.
    * 
-   * @param <T>
-   *          the type of data in the root node
-   * @param viewModel
-   *          the {@link TreeViewModel} that backs the tree
-   * @param rootValue
-   *          the hidden root value of the tree
+   * @param <T> the type of data in the root node
+   * @param viewModel the {@link TreeViewModel} that backs the tree
+   * @param rootValue the hidden root value of the tree
+   *
+   * @deprecated please use {@link Builder}
    */
   public <T> CellBrowser(TreeViewModel viewModel, T rootValue) {
-    this(viewModel, rootValue, getDefaultResources());
+    this(new Builder<T>(viewModel, rootValue));
   }
 
   /**
    * Construct a new {@link CellBrowser} with the specified {@link Resources}.
    * 
-   * @param <T>
-   *          the type of data in the root node
-   * @param viewModel
-   *          the {@link TreeViewModel} that backs the tree
-   * @param rootValue
-   *          the hidden root value of the tree
-   * @param resources
-   *          the {@link Resources} used for images
+   * @param <T> the type of data in the root node
+   * @param viewModel the {@link TreeViewModel} that backs the tree
+   * @param rootValue the hidden root value of the tree
+   * @param resources the {@link Resources} used for images
+   *
+   * @deprecated please use {@link Builder}
    */
-  public <T> CellBrowser(TreeViewModel viewModel, T rootValue,
-      Resources resources) {
-    super(viewModel);
+  public <T> CellBrowser(TreeViewModel viewModel, T rootValue, Resources resources) {
+    this(new Builder<T>(viewModel, rootValue).resources(resources));
+  }
+
+  protected <T> CellBrowser(Builder<T> builder) {
+    super(builder.viewModel);
     if (template == null) {
       template = GWT.create(Template.class);
     }
+    Resources resources = builder.resources();
     this.style = resources.cellBrowserStyle();
     this.style.ensureInjected();
     this.cellListResources = new CellListResourcesImpl(resources);
+    this.loadingIndicator = builder.loadingIndicator;
+    this.pagerFactory = builder.pagerFactory;
+    this.pageSize = builder.pageSize;
     initWidget(new SplitLayoutPanel());
     getElement().getStyle().setOverflow(Overflow.AUTO);
     setStyleName(this.style.cellBrowserWidget());
@@ -875,7 +1045,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     getElement().appendChild(scrollLock);
 
     // Associate the first view with the rootValue.
-    appendTreeNode(getNodeInfo(rootValue), rootValue);
+    appendTreeNode(getNodeInfo(builder.rootValue), builder.rootValue);
 
     // Catch scroll events.
     sinkEvents(Event.ONSCROLL);
@@ -906,6 +1076,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     return treeNodes.get(0);
   }
 
+  @Override
   public boolean isAnimationEnabled() {
     return isAnimationEnabled;
   }
@@ -913,18 +1084,20 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   @Override
   public void onBrowserEvent(Event event) {
     switch (DOM.eventGetType(event)) {
-    case Event.ONSCROLL:
-      // Shorten the scroll bar is possible.
-      adjustScrollLock();
-      break;
+      case Event.ONSCROLL:
+        // Shorten the scroll bar is possible.
+        adjustScrollLock();
+        break;
     }
     super.onBrowserEvent(event);
   }
 
+  @Override
   public void onResize() {
     getSplitLayoutPanel().onResize();
   }
 
+  @Override
   public void setAnimationEnabled(boolean enable) {
     this.isAnimationEnabled = enable;
   }
@@ -932,33 +1105,17 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   /**
    * Set the default width of new columns.
    * 
-   * @param width
-   *          the default width in pixels
+   * @param width the default width in pixels
    * @see #getDefaultColumnWidth()
    */
   public void setDefaultColumnWidth(int width) {
     this.defaultWidth = width;
   }
 
-  @Override
-  public void setKeyboardSelectionPolicy(KeyboardSelectionPolicy policy) {
-    super.setKeyboardSelectionPolicy(policy);
-
-    /*
-     * Set the policy on all lists. We use keyboard selection to track the open
-     * node, so we never actually disable keyboard selection on the lists.
-     */
-    policy = getKeyboardSelectionPolicyForLists();
-    for (TreeNodeImpl<?> treeNode : treeNodes) {
-      treeNode.display.setKeyboardSelectionPolicy(policy);
-    }
-  }
-
   /**
    * Set the minimum width of columns.
    * 
-   * @param minWidth
-   *          the minimum width in pixels
+   * @param minWidth the minimum width in pixels
    * @see #getMinimumColumnWidth()
    */
   public void setMinimumColumnWidth(int minWidth) {
@@ -968,15 +1125,15 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   /**
    * Create a pager to control the list view.
    * 
-   * @param <C>
-   *          the item type in the list view
-   * @param display
-   *          the list view to add paging too
+   * @param <C> the item type in the list view
+   * @param display the list view to add paging too
    * @return the pager
    */
   protected <C> Widget createPager(HasData<C> display) {
-    PageSizePager pager = new PageSizePager(display.getVisibleRange()
-        .getLength());
+    if (pagerFactory == null) {
+      return null;
+    }
+    AbstractPager pager = pagerFactory.create(display);
     pager.setDisplay(display);
     return pager;
   }
@@ -999,12 +1156,9 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
    * Create a new {@link TreeNodeImpl} and append it to the end of the
    * LayoutPanel.
    * 
-   * @param <C>
-   *          the data type of the children
-   * @param nodeInfo
-   *          the info about the node
-   * @param value
-   *          the value of the open node
+   * @param <C> the data type of the children
+   * @param nodeInfo the info about the node
+   * @param value the value of the open node
    */
   private <C> TreeNode appendTreeNode(final NodeInfo<C> nodeInfo, Object value) {
     // Create the list view.
@@ -1031,8 +1185,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     }
 
     // Create a TreeNode.
-    TreeNodeImpl<C> treeNode = new TreeNodeImpl<C>(nodeInfo, value, view,
-        scrollable);
+    TreeNodeImpl<C> treeNode = new TreeNodeImpl<C>(nodeInfo, value, view, scrollable);
     treeNodes.add(treeNode);
 
     /*
@@ -1057,58 +1210,63 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
    * Create a {@link HasData} that will display items. The {@link HasData} must
    * extend {@link Widget}.
    * 
-   * @param <C>
-   *          the item type in the list view
-   * @param nodeInfo
-   *          the node info with child data
-   * @param level
-   *          the level of the list
+   * @param <C> the item type in the list view
+   * @param nodeInfo the node info with child data
+   * @param level the level of the list
    * @return the {@link HasData}
    */
   protected <C> BrowserCellList<C> createDisplay(NodeInfo<C> nodeInfo, int level) {
-    BrowserCellList<C> display = new BrowserCellList<C>(nodeInfo.getCell(),
-        level, nodeInfo.getProvidesKey());
+    BrowserCellList<C> display =
+        new BrowserCellList<C>(nodeInfo.getCell(), level, nodeInfo.getProvidesKey());
+    if (loadingIndicator != null) {
+      display.setLoadingIndicator(loadingIndicator);
+    }
+    if (pageSize != null) {
+      display.setPageSize(pageSize);
+    }
     display.setValueUpdater(nodeInfo.getValueUpdater());
 
-    // Set the keyboard selection policy, but never disable it.
-    KeyboardSelectionPolicy keyboardPolicy = getKeyboardSelectionPolicyForLists();
-    display.setKeyboardSelectionPolicy(keyboardPolicy);
+    /*
+     * A CellBrowser has a single keyboard selection policy and multiple lists,
+     * so we're not using the selection policy in each list. Leave them on all
+     * the time because we use keyboard selection to keep track of which item is
+     * open (selected) at each level.
+     */
+    display.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
     return display;
   }
+  
+  /*
+   * Open api for drag and drop 
+   */
+  protected Widget getLoadingIndicator() {
+		return loadingIndicator;
+	}
+  
+  protected Integer getPageSize() {
+		return pageSize;
+	}
 
   /**
    * Get the HTML representation of an image.
    * 
-   * @param res
-   *          the {@link ImageResource} to render as HTML
+   * @param res the {@link ImageResource} to render as HTML
    * @return the rendered HTML
    */
   private SafeHtml getImageHtml(ImageResource res) {
     // Right-justify image if LTR, left-justify if RTL
     AbstractImagePrototype proto = AbstractImagePrototype.create(res);
     SafeHtml image = SafeHtmlUtils.fromTrustedString(proto.getHTML());
+
     SafeStylesBuilder cssBuilder = new SafeStylesBuilder();
     if (LocaleInfo.getCurrentLocale().isRTL()) {
-    	cssBuilder.appendTrustedString("left:0px;");
+      cssBuilder.appendTrustedString("left:0px;");
     } else {
-    	cssBuilder.appendTrustedString("right:0px;");
+      cssBuilder.appendTrustedString("right:0px;");
     }
     cssBuilder.appendTrustedString("width: " + res.getWidth() + "px;");
     cssBuilder.appendTrustedString("height: " + res.getHeight() + "px;");
     return template.imageWrapper(cssBuilder.toSafeStyles(), image);
-  }
-
-  /**
-   * Get the {@link KeyboardSelectionPolicy} to apply to lists. We use keyboard
-   * selection to track the open node, so we never actually disable keyboard
-   * selection on the lists.
-   * 
-   * @return the {@link KeyboardSelectionPolicy} to use on lists
-   */
-  protected KeyboardSelectionPolicy getKeyboardSelectionPolicyForLists() {
-    KeyboardSelectionPolicy policy = getKeyboardSelectionPolicy();
-    return KeyboardSelectionPolicy.DISABLED == policy ? KeyboardSelectionPolicy.ENABLED
-        : policy;
   }
 
   /**
@@ -1123,8 +1281,7 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
   /**
    * Reduce the number of {@link HasData}s down to the specified level.
    * 
-   * @param level
-   *          the level to trim to
+   * @param level the level to trim to
    */
   private void trimToLevel(int level) {
     // Add a placeholder to maintain the same scroll width.
@@ -1151,18 +1308,11 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
    * specified {@link BrowserCellList}. This method will open/close child
    * {@link TreeNode}s as needed.
    * 
-   * @param cellList
-   *          the CellList that changed state.
-   * @param value
-   *          the value to open
-   * @param open
-   *          true to open, false to close
-   * @param fireEvents
-   *          true to fireEvents
+   * @param cellList the CellList that changed state.
+   * @param fireEvents true to fireEvents
    * @return the open {@link TreeNode}, or null if not opened
    */
-  private <C> TreeNode updateChildState(BrowserCellList<C> cellList,
-      boolean fireEvents) {
+  private <C> TreeNode updateChildState(BrowserCellList<C> cellList, boolean fireEvents) {
     /*
      * Verify that the specified list is still in the browser. It possible for
      * the list to receive deferred updates after it has been removed
@@ -1180,8 +1330,8 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     if (cellList.focusedKey != null && cellList.isFocusedOpen
         && !cellList.focusedKey.equals(newKey)) {
       // Get the node to close.
-      closedNode = (treeNodes.size() > cellList.level + 1) ? treeNodes
-          .get(cellList.level + 1) : null;
+      closedNode =
+          (treeNodes.size() > cellList.level + 1) ? treeNodes.get(cellList.level + 1) : null;
 
       // Close the node.
       trimToLevel(cellList.level);
@@ -1193,13 +1343,16 @@ public class CellBrowser extends AbstractCellTree implements ProvidesResize,
     if (newKey != null) {
       if (newKey.equals(cellList.focusedKey)) {
         // The node is already open.
-        openNode = cellList.isFocusedOpen ? treeNodes.get(cellList.level + 1)
-            : null;
+        openNode = cellList.isFocusedOpen ? treeNodes.get(cellList.level + 1) : null;
       } else {
-        // Add the child node.
+        // Select this value.
+        if (KeyboardSelectionPolicy.BOUND_TO_SELECTION == getKeyboardSelectionPolicy()) {
+          cellList.setSelectedValue(newValue);
+        }
+
+        // Add the child node if this node has children.
         cellList.focusedKey = newKey;
-        NodeInfo<?> childNodeInfo = isLeaf(newValue) ? null
-            : getNodeInfo(newValue);
+        NodeInfo<?> childNodeInfo = isLeaf(newValue) ? null : getNodeInfo(newValue);
         if (childNodeInfo != null) {
           cellList.isFocusedOpen = true;
           justOpenedNode = true;

@@ -15,33 +15,33 @@
  */
 package gwtquery.plugins.droppable.client.gwt;
 
+import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent;
+import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent.BeforeDragStartEventHandler;
+import gwtquery.plugins.draggable.client.events.DragEvent;
+import gwtquery.plugins.draggable.client.events.DragEvent.DragEventHandler;
+import gwtquery.plugins.draggable.client.events.DragStartEvent;
+import gwtquery.plugins.draggable.client.events.DragStartEvent.DragStartEventHandler;
+import gwtquery.plugins.draggable.client.events.DragStopEvent;
+import gwtquery.plugins.draggable.client.events.DragStopEvent.DragStopEventHandler;
+import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent;
+import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent.ActivateDroppableEventHandler;
+import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent;
+import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent.DeactivateDroppableEventHandler;
+import gwtquery.plugins.droppable.client.events.DropEvent;
+import gwtquery.plugins.droppable.client.events.DropEvent.DropEventHandler;
+import gwtquery.plugins.droppable.client.events.OutDroppableEvent;
+import gwtquery.plugins.droppable.client.events.OutDroppableEvent.OutDroppableEventHandler;
+import gwtquery.plugins.droppable.client.events.OverDroppableEvent;
+import gwtquery.plugins.droppable.client.events.OverDroppableEvent.OverDroppableEventHandler;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.CellTreeNodeView;
 import com.google.gwt.view.client.TreeViewModel;
-
-import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent;
-import gwtquery.plugins.draggable.client.events.DragEvent;
-import gwtquery.plugins.draggable.client.events.DragStartEvent;
-import gwtquery.plugins.draggable.client.events.DragStopEvent;
-import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent.BeforeDragStartEventHandler;
-import gwtquery.plugins.draggable.client.events.DragEvent.DragEventHandler;
-import gwtquery.plugins.draggable.client.events.DragStartEvent.DragStartEventHandler;
-import gwtquery.plugins.draggable.client.events.DragStopEvent.DragStopEventHandler;
-import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent;
-import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent;
-import gwtquery.plugins.droppable.client.events.DropEvent;
-import gwtquery.plugins.droppable.client.events.OutDroppableEvent;
-import gwtquery.plugins.droppable.client.events.OverDroppableEvent;
-import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent.ActivateDroppableEventHandler;
-import gwtquery.plugins.droppable.client.events.DeactivateDroppableEvent.DeactivateDroppableEventHandler;
-import gwtquery.plugins.droppable.client.events.DropEvent.DropEventHandler;
-import gwtquery.plugins.droppable.client.events.OutDroppableEvent.OutDroppableEventHandler;
-import gwtquery.plugins.droppable.client.events.OverDroppableEvent.OverDroppableEventHandler;
 
 /**
  * Implementation of the {@link CellTree} allowing dragging and dropping of the
@@ -83,9 +83,10 @@ public class DragAndDropCellTree extends CellTree {
     super(viewModel, rootValue, resources);
   }
 
-  protected <T> CellTreeNodeView<T> createTreeNodeView(T rootValue) {
+  @Override
+  protected <T> CellTreeNodeView<T> createTreeNodeView(T rootValue, CellTreeMessages messages){
     return new DragAndDropCellTreeNodeView<T>(this, null, null, getElement(),
-        rootValue);
+        rootValue, messages);
   }
 
   

@@ -17,6 +17,7 @@
 package com.google.gwt.user.cellview.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.query.client.plugins.events.EventsListener;
@@ -29,13 +30,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Some adaption was done to support GWTQuery Event listener
+ * Some adaptation was done to support GWTQuery Event listener
  
  * Standard implementation used by most cell based widgets.
  * Use {@link com.google.gwt.user.cellview.client.CellBasedWidgetImplStandard} instead.
  *             This class will be removed in future release.
  *             
- * last revision : r10339
+ * last revision : r11363
  */
 
 class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
@@ -58,7 +59,6 @@ class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
    *
    * @param event the event to handle.
    */
-  @SuppressWarnings("unused")
   private static void handleNonBubblingEvent(Event event) {
     // Get the event target.
     EventTarget eventTarget = event.getEventTarget();
@@ -108,10 +108,10 @@ class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
   public CellBasedWidgetImplStandard() {
     // Initialize the set of non-bubbling events.
     nonBubblingEvents = new HashSet<String>();
-    nonBubblingEvents.add("focus");
-    nonBubblingEvents.add("blur");
-    nonBubblingEvents.add("load");
-    nonBubblingEvents.add("error");
+    nonBubblingEvents.add(BrowserEvents.FOCUS);
+    nonBubblingEvents.add(BrowserEvents.BLUR);
+    nonBubblingEvents.add(BrowserEvents.LOAD);
+    nonBubblingEvents.add(BrowserEvents.ERROR);
   }
 
   @Override
