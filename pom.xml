@@ -6,13 +6,13 @@
 	<groupId>com.googlecode.gwtquery.plugins</groupId>
 	<artifactId>droppable</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
-		<gQueryVersion>1.1.0</gQueryVersion>
-		<gwtversion>2.4.0</gwtversion>
+		<gQueryVersion>1.2.0</gQueryVersion>
+		<gwtversion>2.5.0</gwtversion>
 		<draggableVersion>1.0.4</draggableVersion>
 	</properties>
 
