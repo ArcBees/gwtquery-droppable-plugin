@@ -1,0 +1,11 @@
+<module rename-to='PermissionManagerSample2'>
+    <inherits name='gwtquery.plugins.droppable.Droppable'/>
+    <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+    <entry-point class='gwtquery.plugins.droppable.client.permissionmanagersample2.PermissionManagerSample2'/>
+
+    <!-- super dev mode -->
+    <add-linker name="xsiframe"/>
+    <set-configuration-property name="devModeRedirectEnabled"
+                                value="true"/>
+    <set-property name="user.agent" value="safari"/>
+</module>
