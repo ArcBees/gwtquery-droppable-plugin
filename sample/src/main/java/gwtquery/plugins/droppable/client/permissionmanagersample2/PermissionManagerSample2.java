@@ -223,6 +223,7 @@ public class PermissionManagerSample2 implements EntryPoint {
     SortableDragAndDropHandler<MemberInfo> dndHandler = new SortableDragAndDropHandler<MemberInfo>(memberList);
     cellTree.addOutDroppableHandler(dndHandler);
     cellTree.addOverDroppableHandler(dndHandler);
+    cellTree.addDropHandler(dndHandler);
 
     return cellTree;
 
