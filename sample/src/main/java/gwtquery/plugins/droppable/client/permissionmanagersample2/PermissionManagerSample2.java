@@ -57,6 +57,8 @@ import static com.google.gwt.query.client.GQuery.$;
  */
 public class PermissionManagerSample2 implements EntryPoint {
 
+  private SortableDragAndDropHandler dndHandler;
+
   /**
    * The Cell used to render a {@link MemberDatabase.MemberInfo} with detailled info. Code
    * coming from the GWT showcase
@@ -165,6 +167,8 @@ public class PermissionManagerSample2 implements EntryPoint {
   public void onModuleLoad() {
     Resource.INSTANCE.css().ensureInjected();
 
+    dndHandler = new SortableDragAndDropHandler();
+
     RootPanel.get("members").add(new Label("Employees"));
     DroppableWidget<DragAndDropCellList<MemberInfo>> membersList = createAllMemberList();
     RootPanel.get("members").add(membersList);
@@ -198,6 +202,7 @@ public class PermissionManagerSample2 implements EntryPoint {
     configureDragOperation(cellList.getDraggableOptions());
     // the cells are only draggable, the cellList will be droppable
     cellList.setCellDraggableOnly();
+    cellList.addDragHandler(dndHandler);
 
     MemberDatabase.get().addDataDisplay(cellList, Permission.NON_MEMBER);
 
@@ -220,11 +225,10 @@ public class PermissionManagerSample2 implements EntryPoint {
     cellTree.setAnimationEnabled(true);
     cellTree.addStyleName(Resource.INSTANCE.css().permissionTree());
 
-    SortableDragAndDropHandler<MemberInfo> dndHandler = new SortableDragAndDropHandler<MemberInfo>(memberList);
     cellTree.addOutDroppableHandler(dndHandler);
     cellTree.addOverDroppableHandler(dndHandler);
     cellTree.addDropHandler(dndHandler);
-
+    cellTree.addDragHandler(dndHandler);
     return cellTree;
 
   }
@@ -265,5 +269,7 @@ public class PermissionManagerSample2 implements EntryPoint {
 
     return droppableList;
   }
+
+
 
 }

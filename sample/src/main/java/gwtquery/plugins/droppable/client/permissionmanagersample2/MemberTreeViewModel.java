@@ -21,9 +21,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import gwtquery.plugins.droppable.client.DroppableOptions;
-import gwtquery.plugins.droppable.client.DroppableOptions.DroppableFunction;
 import gwtquery.plugins.droppable.client.DroppableOptions.DroppableTolerance;
-import gwtquery.plugins.droppable.client.events.DragAndDropContext;
 import gwtquery.plugins.droppable.client.gwt.DragAndDropNodeInfo;
 import gwtquery.plugins.droppable.client.permissionmanagersample2.MemberDatabase.MemberInfo;
 import gwtquery.plugins.droppable.client.permissionmanagersample2.MemberDatabase.Permission;
@@ -97,18 +95,7 @@ public class MemberTreeViewModel implements TreeViewModel {
       // setup drop operation
       DroppableOptions options = permissionNodeInfo.getDroppableOptions();
       options.setDroppableHoverClass(Resource.INSTANCE.css().droppableHover());
-      // use a DroppableFunction here. We can also add a DropHandler in the tree
-      // itself
-      options.setOnDrop(new DroppableFunction() {
 
-        public void f(DragAndDropContext context) {
-          MemberInfo droppedMember = context.getDraggableData();
-          Permission dropPermission = context.getDroppableData();
-
-          MemberDatabase.get().permissionChange(droppedMember, dropPermission);
-
-        }
-      });
       // permission cell are not draggable
       permissionNodeInfo.setCellDroppableOnly();
       return permissionNodeInfo;
@@ -117,20 +104,16 @@ public class MemberTreeViewModel implements TreeViewModel {
       // member tree node
       Permission p = (Permission) value;
 
-      ListDataProvider<MemberInfo> dataProvider = MemberDatabase.get()
-          .getDataProvider(p);
+      ListDataProvider<MemberInfo> dataProvider = MemberDatabase.get().getDataProvider(p);
 
-      DragAndDropNodeInfo<MemberInfo> memberNodeInfo = new DragAndDropNodeInfo<MemberInfo>(
-          dataProvider, memberCell, new SingleSelectionModel<MemberInfo>(),
-          null);
+      return createNodeInfoForMembers(dataProvider);
 
-      // setup the drag operation
-      PermissionManagerSample2.configureDragOperation(memberNodeInfo
-          .getDraggableOptions());
+    } else if (value instanceof MemberInfo) {
+      MemberInfo memberInfo = (MemberInfo) value;
 
-      memberNodeInfo.getDroppableOptions().setTolerance(DroppableTolerance.INTERSECT);
+      ListDataProvider<MemberInfo> dataProvider = MemberDatabase.get().getDataProvider(value);
 
-      return memberNodeInfo;
+      return createNodeInfoForMembers(dataProvider);
     }
 
     String type = value.getClass().getName();
@@ -138,7 +121,21 @@ public class MemberTreeViewModel implements TreeViewModel {
   }
 
   public boolean isLeaf(Object value) {
-    return value instanceof MemberInfo;
+    return false;
+  }
+
+  private DragAndDropNodeInfo<MemberInfo> createNodeInfoForMembers(ListDataProvider<MemberInfo> listDataProvider) {
+    DragAndDropNodeInfo<MemberInfo> memberNodeInfo = new DragAndDropNodeInfo<MemberInfo>(
+        listDataProvider, memberCell, new SingleSelectionModel<MemberInfo>(),
+        null);
+
+    // setup the drag operation
+    PermissionManagerSample2.configureDragOperation(memberNodeInfo
+        .getDraggableOptions());
+
+    memberNodeInfo.getDroppableOptions().setTolerance(DroppableTolerance.INTERSECT);
+
+    return memberNodeInfo;
   }
 
 }

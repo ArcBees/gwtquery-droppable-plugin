@@ -20,7 +20,9 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +52,7 @@ public class MemberDatabase {
     private final int id;
     private String lastName;
     private Permission permission;
+    private MemberInfo parentMember;
 
     public MemberInfo(Permission permission) {
       this.id = nextId;
@@ -146,6 +149,14 @@ public class MemberDatabase {
      */
     public void setPermission(Permission permission) {
       this.permission = permission;
+    }
+
+    public MemberInfo getParentMember() {
+      return parentMember;
+    }
+
+    public void setParentMember(MemberInfo parentMember) {
+      this.parentMember = parentMember;
     }
   }
 
@@ -284,7 +295,8 @@ public class MemberDatabase {
   /**
    * The provider that holds the list of contacts in the database.
    */
-  private Map<Permission, ListDataProvider<MemberInfo>> projectMembersByPermission = new HashMap<Permission, ListDataProvider<MemberInfo>>();
+  private Map<Object, ListDataProvider<MemberInfo>> providerMap = new HashMap<Object, ListDataProvider<MemberInfo>>();
+
 
   /**
    * Construct a new contact database.
@@ -293,7 +305,7 @@ public class MemberDatabase {
 
     // init data providers list
     for (Permission p : Permission.values()) {
-      projectMembersByPermission.put(p, generateContacts(p));
+      providerMap.put(p, generateContacts(p));
     }
   }
 
@@ -324,8 +336,14 @@ public class MemberDatabase {
     return list;
   }
 
-  public ListDataProvider<MemberInfo> getDataProvider(Permission p) {
-    return projectMembersByPermission.get(p);
+  public ListDataProvider<MemberInfo> getDataProvider(Object key) {
+    ListDataProvider<MemberInfo> dataProvider = providerMap.get(key);
+    if (dataProvider == null) {
+      dataProvider = new ListDataProvider<MemberInfo>();
+      providerMap.put(key, dataProvider);
+    }
+
+    return dataProvider;
   }
 
   /**
@@ -335,19 +353,37 @@ public class MemberDatabase {
    *          the contact to add.
    */
   public void permissionChange(MemberInfo member, Permission newPermission) {
-    if (newPermission == member.getPermission()) {
-      return;
-    }
+    insertToPermissionList(member, newPermission, null, false);
+  }
 
-    ListDataProvider<MemberInfo> previousList = getDataProvider(member
-        .getPermission());
-    ListDataProvider<MemberInfo> newList = getDataProvider(newPermission);
-    previousList.getList().remove(member);
-    newList.getList().add(member);
+  /**
+   *
+   *
+   * @param contact
+   *          the contact to add.
+   */
+  public void insertToPermissionList(MemberInfo member, Permission newPermission, MemberInfo placeHolder, boolean after) {
+    removeFromListProvider(member);
+
+    insertToListProvider(member, newPermission, placeHolder, after);
+
     member.setPermission(newPermission);
+  }
 
-    previousList.refresh();
-    newList.refresh();
+  public void insertToParentList(MemberInfo parent, MemberInfo child) {
+    insertToParentList(parent, child, null, false);
+  }
+
+  /**
+   *
+   */
+  public void insertToParentList(MemberInfo parent, MemberInfo child, MemberInfo placeHolder, boolean after) {
+    removeFromListProvider(child);
+
+    insertToListProvider(child, parent, placeHolder, after);
+
+    child.setParentMember(parent);
+    child.setPermission(parent.getPermission());
   }
 
   /**
@@ -390,6 +426,26 @@ public class MemberDatabase {
    */
   private <T> T nextValue(T[] array) {
     return array[Random.nextInt(array.length)];
+  }
+
+  private void removeFromListProvider(MemberInfo member) {
+    Object dataProviderOwner = member.getParentMember() != null ? member.getParentMember() : member.getPermission();
+
+    getDataProvider(dataProviderOwner).getList().remove(member);
+  }
+
+  private void insertToListProvider(MemberInfo member, Object dataProviderOwner, MemberInfo placeHolder, boolean after) {
+    ListDataProvider<MemberInfo> targetList = getDataProvider(dataProviderOwner);
+
+    if (placeHolder != null) {
+      int position = targetList.getList().indexOf(placeHolder);
+      if (after) {
+        position++;
+      }
+      targetList.getList().add(position, member);
+    } else {
+      targetList.getList().add(member);
+    }
   }
 
 }

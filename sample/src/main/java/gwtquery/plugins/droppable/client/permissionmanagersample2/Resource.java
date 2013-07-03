@@ -28,7 +28,7 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface Resource extends ClientBundle {
 
-  public interface Css extends CssResource {
+  interface Css extends CssResource {
     String dragHelper();
 
     String droppableHover();
@@ -38,10 +38,10 @@ public interface Resource extends ClientBundle {
     String permissionTree();
   }
 
-  public Resource INSTANCE = GWT.create(Resource.class);
+  Resource INSTANCE = GWT.create(Resource.class);
 
   @Source("style.css")
-  public Css css();
+  Css css();
 
   ImageResource contact();
 
