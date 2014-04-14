@@ -95,7 +95,7 @@ class CellBasedWidgetImplTrident extends CellBasedWidgetImpl {
    */
   private static native void dispatchEvent(Event evt, Element elem,
       EventListener listener) /*-{
-    @com.google.gwt.user.client.DOM::dispatchEvent(Lcom/google/gwt/user/client/Event;Lcom/google/gwt/user/client/Element;Lcom/google/gwt/user/client/EventListener;)(evt, elem, listener);
+      @com.google.gwt.user.client.DOM::dispatchEvent(Lcom/google/gwt/user/client/Event;Lcom/google/gwt/dom/client/Element;Lcom/google/gwt/user/client/EventListener;)(evt, elem, listener);
   }-*/;
 
   /**
