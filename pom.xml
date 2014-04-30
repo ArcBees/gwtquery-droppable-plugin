@@ -2,17 +2,17 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Droppable plugin project compatible GWT 2.4</name>
+    <name>Droppable plugin project compatible GWT 2.6</name>
     <groupId>com.googlecode.gwtquery.plugins</groupId>
     <artifactId>droppable</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.8</version>
+    <version>1.0.9-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>1.5</maven.compiler.source>
-        <maven.compiler.target>1.5</maven.compiler.target>
-        <gQueryVersion>1.2.0</gQueryVersion>
-        <gwtversion>2.5.0</gwtversion>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <gQueryVersion>1.4.1</gQueryVersion>
+        <gwtversion>2.6.0</gwtversion>
         <draggableVersion>1.0.4</draggableVersion>
     </properties>
 
@@ -98,7 +98,6 @@
             <artifactId>draggable-plugin</artifactId>
             <version>${draggableVersion}</version>
             <scope>provided</scope>
-
         </dependency>
 
     </dependencies>

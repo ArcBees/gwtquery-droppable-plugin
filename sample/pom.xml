@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.googlecode.gwtquery.plugins</groupId>
         <artifactId>droppable</artifactId>
-        <version>1.0.8</version>
+        <version>1.0.9-SNAPSHOT</version>
     </parent>
 
     <name>Droppable gQuery plugin example</name>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.googlecode.gwtquery.plugins</groupId>
             <artifactId>droppable-plugin</artifactId>
-            <version>1.0.8</version>
+            <version>1.0.9-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
