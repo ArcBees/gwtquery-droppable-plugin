@@ -8,3 +8,5 @@ More information available at : http://code.google.com/p/gwtquery-plugins/wiki/D
 
 Examples are available [here](http://gwtquery-plugins.googlecode.com/svn/branches/droppable_1_0/demo/GwtSimpleSample/GwtSimpleSample.html)
 
+Original author of this plugin: [Julien Dramaix](https://github.com/jdramaix)
+
