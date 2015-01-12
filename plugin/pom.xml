@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.arcbees.gquery</groupId>
         <artifactId>droppable-plugin</artifactId>
-        <version>1.0.9-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
 
     <name>Droppable plugin for gQuery</name>
