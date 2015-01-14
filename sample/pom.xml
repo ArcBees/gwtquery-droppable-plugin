@@ -4,25 +4,32 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.googlecode.gwtquery.plugins</groupId>
-        <artifactId>droppable</artifactId>
-        <version>1.0.9-SNAPSHOT</version>
+        <groupId>com.arcbees.gquery</groupId>
+        <artifactId>droppable-plugin</artifactId>
+        <version>2.0-SNAPSHOT</version>
     </parent>
 
     <name>Droppable gQuery plugin example</name>
     <artifactId>droppable-sample</artifactId>
+
     <packaging>war</packaging>
+
+    <properties>
+        <gwt.loglevel>WARN</gwt.loglevel>
+        <gwt.outputstyle>OBF</gwt.outputstyle>
+    </properties>
+
     <dependencies>
         <dependency>
-            <groupId>com.googlecode.gwtquery.plugins</groupId>
-            <artifactId>droppable-plugin</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <groupId>com.arcbees.gquery</groupId>
+            <artifactId>droppable</artifactId>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
-            <version>${gQueryVersion}</version>
+            <version>${gquery.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -31,11 +38,10 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwt.version}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
-                    <gwtVersion>${gwtversion}</gwtVersion>
-                    <soyc>false</soyc>
                     <runTarget>Droppable/DroppableSample.html</runTarget>
                     <hostedWebapp>src/main/webapp</hostedWebapp>
                 </configuration>
@@ -49,22 +55,32 @@
                 </executions>
             </plugin>
             <plugin>
-              <artifactId>maven-clean-plugin</artifactId>
-              <configuration>
-                <filesets>
-                  <fileset><directory>src/main/webapp/Droppable</directory></fileset>
-                  <fileset><directory>src/main/webapp/WEB-INF/classes</directory></fileset>
-                  <fileset><directory>tomcat</directory></fileset>
-                  <fileset><directory>www-test</directory></fileset>
-                  <fileset><directory>.gwt-tmp</directory></fileset>
-                </filesets>
-              </configuration>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/webapp/Droppable</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>src/main/webapp/WEB-INF/classes</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>tomcat</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>www-test</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>.gwt-tmp</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
             <plugin>
-              <artifactId>maven-deploy-plugin</artifactId>
-              <configuration>
-                 <skip>true</skip>
-              </configuration>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -115,7 +115,7 @@ public class TestOptionsSample implements EntryPoint {
     $("#draggable1").as(Draggable).draggable(EVENT_BUS);
     $("#draggable2").as(Draggable).draggable(EVENT_BUS);
     $("#mainDroppable1").as(Droppable).droppable(createDroppableOptions(),
-        EVENT_BUS);
+            EVENT_BUS);
     $("#secondDroppable1").as(Droppable).droppable(createDroppableOptions(),
         EVENT_BUS);
     $("#mainDroppable2").as(Droppable).droppable(createDroppableOptions(),
