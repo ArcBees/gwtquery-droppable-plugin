@@ -31,7 +31,7 @@ import gwtquery.plugins.droppable.client.events.DragAndDropContext;
 /**
  * Make any elements droppable !
  * 
- * @author Julien Dramaix (julien.dramaix@gmail.com, @jdramaix)
+ * @author Julien Dramaix (julien.dramaix@gmail.com)
  * 
  */
 public class MultiDropSample implements EntryPoint {

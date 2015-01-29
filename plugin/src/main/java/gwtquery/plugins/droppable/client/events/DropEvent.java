@@ -23,7 +23,7 @@ import gwtquery.plugins.draggable.client.events.DragContext;
 /**
  * Event fired when an acceptable draggable is dropped on a droppable.
  * 
- * @author Julien Dramaix (julien.dramaix@gmail.com, @jdramaix)
+ * @author Julien Dramaix (julien.dramaix@gmail.com)
  * 
  */
 public class DropEvent extends
