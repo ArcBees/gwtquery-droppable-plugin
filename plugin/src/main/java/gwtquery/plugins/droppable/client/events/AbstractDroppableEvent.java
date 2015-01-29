@@ -22,6 +22,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+import java.util.List;
+
+import gwtquery.plugins.draggable.client.events.DragContext;
 import gwtquery.plugins.draggable.client.gwt.DraggableWidget;
 import gwtquery.plugins.droppable.client.gwt.DroppableWidget;
 
@@ -41,8 +44,8 @@ public abstract class AbstractDroppableEvent<H extends EventHandler> extends
     this.dragAndDropContext = context;
   }
 
-  public AbstractDroppableEvent(Element droppable, Element draggable) {
-    this.dragAndDropContext = new DragAndDropContext(draggable, droppable);
+  public AbstractDroppableEvent(Element droppable, DragContext ctx) {
+    this.dragAndDropContext = new DragAndDropContext(ctx, droppable);
   }
 
   public DragAndDropContext getDragDropContext() {
@@ -87,6 +90,15 @@ public abstract class AbstractDroppableEvent<H extends EventHandler> extends
 
   /**
    * 
+   * @return the DOM element used for dragging display
+   */
+  public Element getDragHelper() {
+    assert dragAndDropContext != null : "DragAndDropContext cannot be null";
+    return dragAndDropContext.getHelper();
+  }
+
+  /**
+   * 
    * @return the droppable DOM element
    */
   public Element getDroppable() {
@@ -122,11 +134,23 @@ public abstract class AbstractDroppableEvent<H extends EventHandler> extends
   }
   
   /**
-   * 
-   * @return the DOM element used for dragging display
+   *
+   * @return the list of selected draggables.
    */
-  public Element getDragHelper() {
+  public List<Element> getSelectedDraggables() {
     assert dragAndDropContext != null : "DragAndDropContext cannot be null";
-    return dragAndDropContext.getHelper();
+    return dragAndDropContext.getSelectedDraggables();
   }
+
+  /**
+   * @return the draggable element that initiate the drag operation (i.e. the
+   *         clicked element)
+   */
+  public Element getInitialDraggable() {
+    assert dragAndDropContext != null : "DragAndDropContext cannot be null";
+    return dragAndDropContext.getInitialDraggable();
+  }
+
+  
+  
 }

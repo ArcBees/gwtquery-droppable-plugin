@@ -18,6 +18,8 @@ package gwtquery.plugins.droppable.client.events;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
 
+import gwtquery.plugins.draggable.client.events.DragContext;
+
 /**
  * Event fired when an acceptable draggable is being dragged out of the droppable.
  * 
@@ -37,8 +39,8 @@ public class OutDroppableEvent extends
     super(ctx);
   }
 
-  public OutDroppableEvent(Element droppable, Element draggable) {
-    super(droppable, draggable);
+  public OutDroppableEvent(Element droppable, DragContext dragCtx) {
+    super(droppable, dragCtx);
   }
 
   @Override

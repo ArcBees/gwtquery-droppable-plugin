@@ -33,8 +33,8 @@ public class DragAndDropContext extends DragContext {
 
   private Element droppable;
 
-  public DragAndDropContext(Element draggable, Element droppable) {
-    super(draggable);
+  public DragAndDropContext(DragContext ctx, Element droppable) {
+    super(ctx);
     this.droppable = droppable;
   }
 

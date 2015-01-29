@@ -18,10 +18,12 @@ package gwtquery.plugins.droppable.client.events;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
 
+import gwtquery.plugins.draggable.client.events.DragContext;
+
 /**
  * Event fired when an acceptable draggable is dropped on a droppable.
  * 
- * @author Julien Dramaix (julien.dramaix@gmail.com)
+ * @author Julien Dramaix (julien.dramaix@gmail.com, @jdramaix)
  * 
  */
 public class DropEvent extends
@@ -37,8 +39,8 @@ public class DropEvent extends
     super(ctx);
   }
 
-  public DropEvent(Element droppable, Element draggable) {
-    super(droppable, draggable);
+  public DropEvent(Element droppable, DragContext dragCtx) {
+    super(droppable, dragCtx);
   }
 
   @Override
