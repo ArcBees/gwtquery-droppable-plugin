@@ -1,0 +1,102 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>GwtQuery: Multi-drop example</title>
+<style type="text/css">
+body {
+	color: black;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size: small;
+}
+
+.draggable {
+	width: 120px;
+	height: 100px;
+	padding: 0.5em;
+	border: black solid 1px;
+	background: #f6f6f6;
+}
+
+.demo {
+	width: 700px;
+	height: 900px;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 10px;
+	border: black solid 1px;
+}
+
+.droppable {
+	width: 300px;
+	height: 300px;
+	padding: 0.5em;
+	margin: 10px;
+	background-color: #CCCCCC;
+	border: 1px solid #AAAAAA;
+    position:relative;
+    float: right;
+     margin-right: 20px;
+}
+
+.orange-background {
+	background-color: #F6A828;
+	border: 1px solid #E78F08;
+	color: white;
+}
+
+
+
+.blue-background{
+    background-color: #C1DEFD;
+    color: white;
+}
+
+.yellow-background {
+    background-color: #FFE45C;
+    border: 1px solid black;
+    color: #363636;
+}
+
+</style>
+<script language="javascript" src="MultiDropSample.nocache.js"></script>
+</head>
+<body>
+<div class="demo">
+<h1>GWTQuery Droppable plug-in : multi-drop example</h1>
+<ul style="padding: 10px 0px; list-style: none; display: block">          
+    <li style="display: inline;"><a href="../SimpleSample/SimpleSample.html">Simple example</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../VisualFeedbackSample/VisualFeedbackSample.html">Visual feedback</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../RevertAndAcceptSample/RevertAndAcceptSample.html">Revert and accept options</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../GreedySample/GreedySample.html">the "greedy" option</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../MultiDropSample/MultiDropSample.html">Multi-drop</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../TestOptionsSample/TestOptionsSample.html">The options in action</a>&nbsp;|&nbsp;</li>
+    <li style="display: inline;"><a href="../GwtSimpleSample/GwtSimpleSample.html">Examples with GWT widgets</a>&nbsp;|&nbsp;</li>
+</ul>
+<p style="clear: both; padding-top:10px;">Select many draggables (by pressing ctrl or meta key and clicking on it) and drop them on the drop target.</p>
+
+<div id="droppable" class="droppable">
+<p>I'm a drop target</p>
+</div>
+
+<div id="draggable1" class="draggable">
+<p>I'm the draggable1</p>
+</div>
+
+<div id="draggable2" class="draggable">
+<p>I'm the draggable2</p>
+</div>
+
+<div id="draggable3" class="draggable">
+<p>I'm the draggable3</p>
+</div>
+
+<div id="draggable4" class="draggable">
+<p>I'm the draggable4</p>
+</div>
+
+<div style="clear: right; margin-bottom:10px;"></div>
+<a href="http://code.google.com/p/gwtquery-plugins/source/browse/trunk/droppable/sample/src/main/java/gwtquery/plugins/droppable/client/multidropsample/MultiDropSample.java" target="_blank">Java source code</a>
+</div>
+</body>
+</html>
