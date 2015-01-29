@@ -32,35 +32,35 @@
         <dependency>
             <groupId>com.arcbees.gquery</groupId>
             <artifactId>draggable</artifactId>
-		</dependency>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-               <artifactId>maven-surefire-plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-               <configuration>
-                 <additionalClasspathElements>
-                   <additionalClasspathElement>\${project.build.sourceDirectory}</additionalClasspathElement>
-                   <additionalClasspathElement>\${project.build.testSourceDirectory}</additionalClasspathElement>
-                 </additionalClasspathElements>
-                 <useManifestOnlyJar>false</useManifestOnlyJar>
-                 <forkMode>always</forkMode>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>\${project.build.sourceDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>\${project.build.testSourceDirectory}</additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <useManifestOnlyJar>false</useManifestOnlyJar>
+                    <forkMode>always</forkMode>
 
-                 <!-- Folder for generated testing stuff -->
-                 <systemProperties>
-                   <property>
-                     <name>gwt.args</name>
+                    <!-- Folder for generated testing stuff -->
+                    <systemProperties>
+                        <property>
+                            <name>gwt.args</name>
                             <value>-war target/www</value>
-                   </property>
-                 </systemProperties>
-               </configuration>
+                        </property>
+                    </systemProperties>
+                </configuration>
             </plugin>
             <plugin>
-              <artifactId>maven-clean-plugin</artifactId>
-              <configuration>
-                <filesets>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
                         <fileset>
                             <directory>tomcat</directory>
                         </fileset>
@@ -70,8 +70,8 @@
                         <fileset>
                             <directory>.gwt-tmp</directory>
                         </fileset>
-                </filesets>
-              </configuration>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
@@ -82,5 +82,5 @@
                 <directory>${basedir}/src/main/resources</directory>
             </resource>
         </resources>
-   </build>
+    </build>
 </project>
