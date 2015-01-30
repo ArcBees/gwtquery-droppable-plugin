@@ -37,9 +37,9 @@ import gwtquery.plugins.droppable.client.events.DragAndDropContext;
 
 /**
  * Implementation of the {@link DragAndDropManager} for drop operations
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
+ *
  */
 public class DragAndDropManagerImpl extends DragAndDropManager {
 
@@ -53,7 +53,7 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
   /**
    * Link a droppable with the specified scope <code>scope</code>
-   * 
+   *
    * @param droppable
    * @param scope
    */
@@ -69,8 +69,8 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
   /**
    * Method called when the draggable is being dragged
-   * 
-   * @param draggable
+   *
+   * @param ctx
    * @param e
    */
   @Override
@@ -93,8 +93,8 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
   /**
    * Method called when the draggable was dropped
-   * 
-   * @param draggable
+   *
+   * @param ctx
    * @param e
    * @return
    */
@@ -122,7 +122,7 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
   /**
    * Return the list of droppable elements with the scope <code>scope</code>
-   * 
+   *
    * @param scope
    * @return
    */
@@ -152,8 +152,7 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
       DroppableOptions droppableOptions = droppableHandler.getOptions();
       AcceptFunction accept = droppableOptions.getAccept();
       if (droppableOptions.isDisabled()
-          || (accept != null && !accept.acceptDrop(new DragAndDropContext(ctx,
-              droppable)))) {
+          || (accept != null && !accept.acceptDrop(new DragAndDropContext(ctx, droppable)))) {
         continue;
       }
 
@@ -180,9 +179,7 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
           droppableHandler.activate(dndContext, e);
         }
       }
-
     }
-
   }
 
   @Override
