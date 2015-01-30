@@ -18,71 +18,60 @@ package gwtquery.plugins.droppable.client.gwt;
 /**
  * This objet determines if the current rendering cell have to be draggable
  * and/or droppable
- * 
+ *
+ * @param <C> the cell type
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
- * @param <C>
- *          the cell type
  */
 public interface CellDragAndDropBehaviour<C> {
+    /**
+     * Implementation of {@link CellDragAndDropBehaviour} definig cells as
+     * draggable only
+     *
+     * @param <C>
+     * @author Julien Dramaix (julien.dramaix@gmail.com)
+     */
+    public class CellDragOnlyBehaviour<C> implements CellDragAndDropBehaviour<C> {
+        public boolean isDraggable(C value) {
+            return true;
+        }
 
-  /**
-   * Implementation of {@link CellDragAndDropBehaviour} definig cells as
-   * draggable only
-   * 
-   * @author Julien Dramaix (julien.dramaix@gmail.com)
-   * 
-   * @param <C>
-   */
-  public class CellDragOnlyBehaviour<C> implements CellDragAndDropBehaviour<C> {
-
-    public boolean isDraggable(C value) {
-      return true;
+        public boolean isDroppable(C value) {
+            return false;
+        }
     }
 
-    public boolean isDroppable(C value) {
-      return false;
+    /**
+     * Implementation of {@link CellDragAndDropBehaviour} defining cells as
+     * droppable only
+     *
+     * @param <C>
+     * @author Julien Dramaix (julien.dramaix@gmail.com)
+     */
+    public class CellDropOnlyBehaviour<C> implements CellDragAndDropBehaviour<C> {
+        public boolean isDraggable(C value) {
+            return false;
+        }
+
+        public boolean isDroppable(C value) {
+            return true;
+        }
     }
 
-  }
+    /**
+     * This method is called during the render of a cell. It decides if the cell
+     * is draggable or not.
+     *
+     * @param value
+     * @return
+     */
+    boolean isDraggable(C value);
 
-  /**
-   * Implementation of {@link CellDragAndDropBehaviour} defining cells as
-   * droppable only
-   * 
-   * @author Julien Dramaix (julien.dramaix@gmail.com)
-   * 
-   * @param <C>
-   */
-  public class CellDropOnlyBehaviour<C> implements CellDragAndDropBehaviour<C> {
-
-    public boolean isDraggable(C value) {
-      return false;
-    }
-
-    public boolean isDroppable(C value) {
-      return true;
-    }
-
-  }
-
-  /**
-   * This method is called during the render of a cell. It decides if the cell
-   * is draggable or not.
-   * 
-   * @param value
-   * @param key
-   * @return
-   */
-  boolean isDraggable(C value);
-
-  /**
-   * This method is called during the render of a cell. It decides if the cell
-   * is droppable or not.
-   * 
-   * @param value
-   * @param key
-   * @return
-   */
-  boolean isDroppable(C value);
+    /**
+     * This method is called during the render of a cell. It decides if the cell
+     * is droppable or not.
+     *
+     * @param value
+     * @return
+     */
+    boolean isDroppable(C value);
 }

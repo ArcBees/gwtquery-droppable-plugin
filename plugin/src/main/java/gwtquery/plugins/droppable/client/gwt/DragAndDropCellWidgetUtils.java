@@ -22,7 +22,6 @@ import static gwtquery.plugins.droppable.client.Droppable.Droppable;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.query.client.GQuery;
-
 import gwtquery.plugins.draggable.client.DraggableHandler;
 import gwtquery.plugins.draggable.client.DraggableOptions;
 import gwtquery.plugins.droppable.client.DroppableHandler;
@@ -31,67 +30,57 @@ import gwtquery.plugins.droppable.client.DroppableOptions;
 /**
  * Utils class with all code used in CellWidget to manage
  * the drag and drop behavior of cells
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
-
 public class DragAndDropCellWidgetUtils {
+    public static final String VALUE_KEY = "__dragAndDropCellAssociatedValue";
+    private static final DragAndDropCellWidgetUtils INSTANCE = new DragAndDropCellWidgetUtils();
 
-  public static final String VALUE_KEY = "__dragAndDropCellAssociatedValue";
-
-  private static final DragAndDropCellWidgetUtils INSTANCE = new DragAndDropCellWidgetUtils();
-
-  static DragAndDropCellWidgetUtils get() {
-    return INSTANCE;
-  }
-
-  private DragAndDropCellWidgetUtils() {
-  }
-
-  void cleanCell(Element cell) {
-
-    if (cell == null) {
-      return;
+    static DragAndDropCellWidgetUtils get() {
+        return INSTANCE;
     }
 
-    GQuery $cell = $(cell);
-
-    if (DraggableHandler.getInstance(cell) != null) {
-      $cell.as(Draggable).destroy();
+    private DragAndDropCellWidgetUtils() {
     }
 
-    if (DroppableHandler.getInstance(cell) != null) {
-      $cell.as(Droppable).destroy();
-    }
-    
-    $cell.removeData(VALUE_KEY);
-  }
+    void cleanCell(Element cell) {
 
-  <C> void maybeMakeDraggableOrDroppable(Element cell, C value,
-      CellDragAndDropBehaviour<C> cellDragAndDropBehaviour,
-      DraggableOptions draggableOptions, DroppableOptions droppableOptions,
-      EventBus eventBus) {
+        if (cell == null) {
+            return;
+        }
 
-    GQuery $cell = $(cell);
+        GQuery $cell = $(cell);
 
-    if ((cellDragAndDropBehaviour == null || cellDragAndDropBehaviour
-        .isDraggable(value))
-        && DraggableHandler.getInstance(cell) == null) {
-      
-      $cell.as(Draggable).draggable(draggableOptions, eventBus);
-    
+        if (DraggableHandler.getInstance(cell) != null) {
+            $cell.as(Draggable).destroy();
+        }
+
+        if (DroppableHandler.getInstance(cell) != null) {
+            $cell.as(Droppable).destroy();
+        }
+
+        $cell.removeData(VALUE_KEY);
     }
 
-    if ((cellDragAndDropBehaviour == null || cellDragAndDropBehaviour
-        .isDroppable(value))
-        && DroppableHandler.getInstance(cell) == null) {
-      
-      $cell.as(Droppable).droppable(droppableOptions, eventBus);
-    
+    <C> void maybeMakeDraggableOrDroppable(Element cell, C value, CellDragAndDropBehaviour<C>
+            cellDragAndDropBehaviour, DraggableOptions draggableOptions, DroppableOptions droppableOptions, EventBus
+            eventBus) {
+
+        GQuery $cell = $(cell);
+
+        if ((cellDragAndDropBehaviour == null || cellDragAndDropBehaviour.isDraggable(value)) && DraggableHandler
+                .getInstance(cell) == null) {
+
+            $cell.as(Draggable).draggable(draggableOptions, eventBus);
+        }
+
+        if ((cellDragAndDropBehaviour == null || cellDragAndDropBehaviour.isDroppable(value)) && DroppableHandler
+                .getInstance(cell) == null) {
+
+            $cell.as(Droppable).droppable(droppableOptions, eventBus);
+        }
+
+        $cell.data(VALUE_KEY, value);
     }
-
-    $cell.data(VALUE_KEY, value);
-  }
-
 }

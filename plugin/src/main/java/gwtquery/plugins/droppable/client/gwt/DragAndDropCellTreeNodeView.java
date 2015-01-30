@@ -28,175 +28,151 @@ import com.google.gwt.view.client.TreeViewModel.NodeInfo;
 
 /**
  * A view of a tree node awith drag and drop support.
- * 
- * @param <T>
- *          the type that this view contains
+ *
+ * @param <T> the type that this view contains
  */
 class DragAndDropCellTreeNodeView<T> extends CellTreeNodeView<T> {
-
-  /**
-   * The {@link com.google.gwt.view.client.HasData} used to show children. This
-   * class is intentionally static because we might move it to a new
-   * {@link DragAndDropCellTreeNodeView}, and we don't want non-static
-   * references to the old {@link DragAndDropCellTreeNodeView}.
-   * 
-   * @param <C>
-   *          the child item type
-   */
-  protected static class DragAndDropNodeCellList<C> extends NodeCellList<C> {
-
     /**
-     * The view used by the NodeCellList.
+     * The {@link com.google.gwt.view.client.HasData} used to show children. This
+     * class is intentionally static because we might move it to a new
+     * {@link DragAndDropCellTreeNodeView}, and we don't want non-static
+     * references to the old {@link DragAndDropCellTreeNodeView}.
+     *
+     * @param <C> the child item type
      */
-    protected class View extends NodeCellList<C>.View {
+    protected static class DragAndDropNodeCellList<C> extends NodeCellList<C> {
+        /**
+         * The view used by the NodeCellList.
+         */
+        protected class View extends NodeCellList<C>.View {
+            private final Element childContainer;
 
-      private final Element childContainer;
+            public View(Element childContainer) {
 
-      public View(Element childContainer) {
-        
-        super(childContainer);
-        this.childContainer = childContainer;
-      }
+                super(childContainer);
+                this.childContainer = childContainer;
+            }
 
-      @Override
-      public void replaceAllChildren(List<C> values, SelectionModel<? super C> selectionModel,
-              boolean stealFocus) {
-        // first clean all cell
-        cleanAllCell();
+            @Override
+            public void replaceAllChildren(List<C> values, SelectionModel<? super C> selectionModel, boolean
+                    stealFocus) {
+                // first clean all cell
+                cleanAllCell();
 
-        super.replaceAllChildren(values, selectionModel, stealFocus);
+                super.replaceAllChildren(values, selectionModel, stealFocus);
 
-        // add drag and drop behaviour
-        addDragAndDropBehaviour(values, 0);
-      }
+                // add drag and drop behaviour
+                addDragAndDropBehaviour(values, 0);
+            }
 
-      @Override
-      public void replaceChildren(List<C> values, int start,
-              SelectionModel<? super C> selectionModel, boolean stealFocus) {
-        // clean cell before they are replaced
-        int end = start + values.size();
-        for (int rowIndex = start; rowIndex < end; rowIndex++) {
-          Element oldCell = getRowElement(rowIndex);
-          DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
+            @Override
+            public void replaceChildren(List<C> values, int start, SelectionModel<? super C> selectionModel, boolean
+                    stealFocus) {
+                // clean cell before they are replaced
+                int end = start + values.size();
+                for (int rowIndex = start; rowIndex < end; rowIndex++) {
+                    Element oldCell = getRowElement(rowIndex);
+                    DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
+                }
+
+                super.replaceChildren(values, start, selectionModel, stealFocus);
+
+                // add drag and drop behaviour
+                addDragAndDropBehaviour(values, start);
+            }
+
+            @SuppressWarnings("unchecked")
+            protected void addDragAndDropBehaviour(List<C> values, int start) {
+
+                int end = start + values.size();
+
+                for (int rowIndex = start; rowIndex < end; rowIndex++) {
+                    C value = values.get(rowIndex - start);
+                    Element newCell = getRowElement(rowIndex);
+
+                    if (!(getNodeInfo() instanceof DragAndDropNodeInfo<?>)) {
+                        continue;
+                    }
+                    final DragAndDropNodeInfo<C> dndNodeInfo = (DragAndDropNodeInfo<C>) getNodeInfo();
+
+                    DragAndDropCellWidgetUtils.get().maybeMakeDraggableOrDroppable(newCell, value, dndNodeInfo
+                            .getCellDragAndDropBehaviour(), dndNodeInfo.getDraggableOptions(), dndNodeInfo
+                            .getDroppableOptions(), ((DragAndDropCellTreeNodeView) getNodeView()).getTree()
+                            .ensureDragAndDropHandlers());
+                }
+            }
+
+            protected void cleanAllCell() {
+                $(childContainer).children().each(new Function() {
+                    @Override
+                    public void f(Element div) {
+                        DragAndDropCellWidgetUtils.get().cleanCell((Element) div.getChild(0).cast());
+                    }
+                });
+            }
+
+            private Element getRowElement(int indexOnPage) {
+                if (indexOnPage >= 0 && childContainer.getChildCount() > indexOnPage) {
+                    return childContainer.getChild(indexOnPage).getChild(0).cast();
+                }
+                return null;
+            }
         }
 
-        super.replaceChildren(values, start, selectionModel, stealFocus);
+        // keep the view to clean it during the cleanup
+        private View view;
 
-        // add drag and drop behaviour
-        addDragAndDropBehaviour(values, start);
-      }
-
-      @SuppressWarnings("unchecked")
-      protected void addDragAndDropBehaviour(List<C> values, int start) {
-
-        int end = start + values.size();
-
-        for (int rowIndex = start; rowIndex < end; rowIndex++) {
-          C value = values.get(rowIndex - start);
-          Element newCell = getRowElement(rowIndex);
-
-          if (!(getNodeInfo() instanceof DragAndDropNodeInfo<?>)) {
-            continue;
-          }
-          final DragAndDropNodeInfo<C> dndNodeInfo = (DragAndDropNodeInfo<C>) getNodeInfo();
-
-          DragAndDropCellWidgetUtils.get().maybeMakeDraggableOrDroppable(
-              newCell,
-              value,
-              dndNodeInfo.getCellDragAndDropBehaviour(),
-              dndNodeInfo.getDraggableOptions(),
-              dndNodeInfo.getDroppableOptions(),
-              ((DragAndDropCellTreeNodeView) getNodeView()).getTree()
-                  .ensureDragAndDropHandlers());
+        public DragAndDropNodeCellList(final NodeInfo<C> nodeInfo, final CellTreeNodeView<?> nodeView, int pageSize) {
+            super(nodeInfo, nodeView, pageSize);
         }
 
-      }
-
-      protected void cleanAllCell() {
-        $(childContainer).children().each(new Function() {
-          @Override
-          public void f(Element div) {
-            DragAndDropCellWidgetUtils.get().cleanCell(
-                (Element) div.getChild(0).cast());
-          }
-        });
-
-      }
-
-      private Element getRowElement(int indexOnPage) {
-        if (indexOnPage >= 0 && childContainer.getChildCount() > indexOnPage) {
-          return childContainer.getChild(indexOnPage).getChild(0).cast();
+        /**
+         * Cleanup this node view.
+         */
+        public void cleanup() {
+            super.cleanup();
+            view.cleanAllCell();
         }
-        return null;
-      }
+
+        @Override
+        protected NodeCellList<C>.View createView() {
+            if (view == null) {
+                view = new View(getNodeView().ensureChildContainer());
+            }
+            return view;
+        }
     }
 
-    // keep the view to clean it during the cleanup
-    private View view;
-
-    public DragAndDropNodeCellList(final NodeInfo<C> nodeInfo,
-        final CellTreeNodeView<?> nodeView, int pageSize) {
-      super(nodeInfo, nodeView, pageSize);
-     
-    }
+    private DragAndDropCellTree tree;
+    private CellTreeMessages messages;
 
     /**
-     * Cleanup this node view.
+     * Construct a {@link DragAndDropCellTreeNodeView}.
+     *
+     * @param tree           the parent {@link DragAndDropCellTreeNodeView}
+     * @param parent         the parent {@link DragAndDropCellTreeNodeView}
+     * @param parentNodeInfo the {@link NodeInfo} of the parent
+     * @param elem           the outer element of this {@link DragAndDropCellTreeNodeView}
+     * @param value          the value of this node
      */
-    public void cleanup() {
-      super.cleanup();
-      view.cleanAllCell();
+    public DragAndDropCellTreeNodeView(final DragAndDropCellTree tree, final CellTreeNodeView<?> parent, NodeInfo<T>
+            parentNodeInfo, Element elem, T value, CellTreeMessages messages) {
+        super(tree, parent, parentNodeInfo, elem, value, messages);
+        this.messages = messages;
+        this.tree = tree;
+    }
+
+    protected <C> CellTreeNodeView<C> createTreeNodeView(NodeInfo<C> nodeInfo, Element childElem, C childValue,
+                                                         Object viewData) {
+        return new DragAndDropCellTreeNodeView<C>(tree, this, nodeInfo, childElem, childValue, messages);
+    }
+
+    protected DragAndDropCellTree getTree() {
+        return tree;
     }
 
     @Override
-    protected NodeCellList<C>.View createView() {
-      if (view == null) {
-        view = new View(getNodeView().ensureChildContainer());
-      }
-      return view;
+    protected <C> NodeCellList<C> createNodeCellList(NodeInfo<C> nodeInfo) {
+        return new DragAndDropNodeCellList<C>(nodeInfo, this, tree.getDefaultNodeSize());
     }
-
-  }
-
-  private DragAndDropCellTree tree;
-  private CellTreeMessages messages;
-
-  /**
-   * Construct a {@link DragAndDropCellTreeNodeView}.
-   * 
-   * @param tree
-   *          the parent {@link DragAndDropCellTreeNodeView}
-   * @param parent
-   *          the parent {@link DragAndDropCellTreeNodeView}
-   * @param parentNodeInfo
-   *          the {@link NodeInfo} of the parent
-   * @param elem
-   *          the outer element of this {@link DragAndDropCellTreeNodeView}
-   * @param value
-   *          the value of this node
-   */
-  public DragAndDropCellTreeNodeView(final DragAndDropCellTree tree,
-      final CellTreeNodeView<?> parent, NodeInfo<T> parentNodeInfo,
-      Element elem, T value,  CellTreeMessages messages) {
-    super(tree, parent, parentNodeInfo, elem, value, messages);
-    this.messages = messages;
-    this.tree = tree;
-  }
-
-  protected <C> CellTreeNodeView<C> createTreeNodeView(NodeInfo<C> nodeInfo,
-      Element childElem, C childValue, Object viewData) {
-    return new DragAndDropCellTreeNodeView<C>(tree, this, nodeInfo, childElem,
-        childValue, messages);
-  }
-
-  protected DragAndDropCellTree getTree() {
-    return tree;
-  }
-  
-  @Override
-  protected <C> NodeCellList<C> createNodeCellList(
-      NodeInfo<C> nodeInfo) {
-    return new DragAndDropNodeCellList<C>(nodeInfo, this,
-        tree.getDefaultNodeSize());
-  }
 }
