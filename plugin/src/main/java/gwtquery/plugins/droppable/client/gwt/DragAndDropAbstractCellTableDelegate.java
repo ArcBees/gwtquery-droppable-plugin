@@ -1,6 +1,7 @@
 package gwtquery.plugins.droppable.client.gwt;
 
 import static com.google.gwt.query.client.GQuery.$;
+
 import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent;
 import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent.BeforeDragStartEventHandler;
 import gwtquery.plugins.draggable.client.events.DragEvent;
@@ -37,162 +38,142 @@ import com.google.gwt.user.cellview.client.Column;
 /**
  * Class used internally by {@link DragAndDropCellTable} and
  * {@link DragAndDropDataGrid}
- * 
+ *
  * @author jDramaix
- * 
  */
 class DragAndDropAbstractCellTableDelegate<T> {
+    private final List<Column<T, ?>> columns = new ArrayList<Column<T, ?>>();
+    private EventBus dragAndDropHandlerManager;
 
-	private final List<Column<T, ?>> columns = new ArrayList<Column<T, ?>>();
-	private EventBus dragAndDropHandlerManager;
+    DragAndDropAbstractCellTableDelegate() {
+    }
 
-	DragAndDropAbstractCellTableDelegate() {
-	}
+    HandlerRegistration addActivateDroppableHandler(ActivateDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, ActivateDroppableEvent.TYPE);
+    }
 
-	 HandlerRegistration addActivateDroppableHandler(
-			ActivateDroppableEventHandler handler) {
-		return addDragAndDropHandler(handler, ActivateDroppableEvent.TYPE);
-	}
+    /**
+     * Add a handler object that will manage the {@link BeforeDragStartEvent}
+     * event. this kind of event is fired before the initialization of the drag
+     * operation.
+     */
+    HandlerRegistration addBeforeDragHandler(BeforeDragStartEventHandler handler) {
+        return addDragAndDropHandler(handler, BeforeDragStartEvent.TYPE);
+    }
 
-	/**
-	 * Add a handler object that will manage the {@link BeforeDragStartEvent}
-	 * event. this kind of event is fired before the initialization of the drag
-	 * operation.
-	 */
-	 HandlerRegistration addBeforeDragHandler(
-			BeforeDragStartEventHandler handler) {
-		return addDragAndDropHandler(handler, BeforeDragStartEvent.TYPE);
-	}
+    void insertColumn(int beforeIndex, Column<T, ?> col) {
+        columns.add(beforeIndex, col);
+    }
 
+    HandlerRegistration addDeactivateDroppableHandler(DeactivateDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, DeactivateDroppableEvent.TYPE);
+    }
 
-	 void insertColumn(int beforeIndex, Column<T, ?> col) {
-		columns.add(beforeIndex, col);
-	}
+    /**
+     * Add a handler object that will manage the {@link DragEvent} event. this
+     * kind of event is fired during the move of the widget.
+     */
+    HandlerRegistration addDragHandler(DragEventHandler handler) {
+        return addDragAndDropHandler(handler, DragEvent.TYPE);
+    }
 
-	 HandlerRegistration addDeactivateDroppableHandler(
-			DeactivateDroppableEventHandler handler) {
-		return addDragAndDropHandler(handler, DeactivateDroppableEvent.TYPE);
-	}
+    /**
+     * Add a handler object that will manage the {@link DragStartEvent} event.
+     * This kind of event is fired when the drag operation starts.
+     */
+    HandlerRegistration addDragStartHandler(DragStartEventHandler handler) {
+        return addDragAndDropHandler(handler, DragStartEvent.TYPE);
+    }
 
-	/**
-	 * Add a handler object that will manage the {@link DragEvent} event. this
-	 * kind of event is fired during the move of the widget.
-	 */
-	 HandlerRegistration addDragHandler(DragEventHandler handler) {
-		return addDragAndDropHandler(handler, DragEvent.TYPE);
-	}
+    /**
+     * Add a handler object that will manage the {@link DragStopEvent} event.
+     * This kind of event is fired when the drag operation stops.
+     */
+    HandlerRegistration addDragStopHandler(DragStopEventHandler handler) {
+        return addDragAndDropHandler(handler, DragStopEvent.TYPE);
+    }
 
-	/**
-	 * Add a handler object that will manage the {@link DragStartEvent} event.
-	 * This kind of event is fired when the drag operation starts.
-	 */
-	 HandlerRegistration addDragStartHandler(DragStartEventHandler handler) {
-		return addDragAndDropHandler(handler, DragStartEvent.TYPE);
-	}
+    HandlerRegistration addDropHandler(DropEventHandler handler) {
+        return addDragAndDropHandler(handler, DropEvent.TYPE);
+    }
 
-	/**
-	 * Add a handler object that will manage the {@link DragStopEvent} event.
-	 * This kind of event is fired when the drag operation stops.
-	 */
-	 HandlerRegistration addDragStopHandler(DragStopEventHandler handler) {
-		return addDragAndDropHandler(handler, DragStopEvent.TYPE);
-	}
+    HandlerRegistration addOutDroppableHandler(OutDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, OutDroppableEvent.TYPE);
+    }
 
-	 HandlerRegistration addDropHandler(DropEventHandler handler) {
-		return addDragAndDropHandler(handler, DropEvent.TYPE);
-	}
+    HandlerRegistration addOverDroppableHandler(OverDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, OverDroppableEvent.TYPE);
+    }
 
-	 HandlerRegistration addOutDroppableHandler(
-			OutDroppableEventHandler handler) {
-		return addDragAndDropHandler(handler, OutDroppableEvent.TYPE);
-	}
+    void removeColumn(int index) {
+        columns.remove(index);
+    }
 
-	 HandlerRegistration addOverDroppableHandler(
-			OverDroppableEventHandler handler) {
-		return addDragAndDropHandler(handler, OverDroppableEvent.TYPE);
-	}
+    final <H extends EventHandler> HandlerRegistration addDragAndDropHandler(H handler, Type<H> type) {
+        return ensureDrangAndDropHandlers().addHandler(type, handler);
+    }
 
-	 void removeColumn(int index) {
-		columns.remove(index);
-	}
+    EventBus ensureDrangAndDropHandlers() {
+        return dragAndDropHandlerManager == null ? dragAndDropHandlerManager = new SimpleEventBus() :
+                dragAndDropHandlerManager;
+    }
 
-	 final <H extends EventHandler> HandlerRegistration addDragAndDropHandler(
-			H handler, Type<H> type) {
-		return ensureDrangAndDropHandlers().addHandler(type, handler);
-	}
+    void addDragAndDropBehaviour(List<T> values, int start, Element childContainer) {
+        int end = start + values.size();
 
-	 EventBus ensureDrangAndDropHandlers() {
+        for (int rowIndex = start; rowIndex < end; rowIndex++) {
 
-		return dragAndDropHandlerManager == null ? dragAndDropHandlerManager = new SimpleEventBus()
-				: dragAndDropHandlerManager;
-	}
+            T value = values.get(rowIndex - start);
 
-	 void addDragAndDropBehaviour(List<T> values, int start, Element childContainer) {
+            for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
+                Column<T, ?> column = columns.get(columnIndex);
 
-		int end = start + values.size();
+                if (!(column instanceof DragAndDropColumn<?, ?>)) {
+                    continue;
+                }
 
-		for (int rowIndex = start; rowIndex < end; rowIndex++) {
+                final DragAndDropColumn<T, ?> dndColumn = (DragAndDropColumn<T, ?>) column;
 
-			T value = values.get(rowIndex - start);
+                Element newCell = getCellWrapperDiv(rowIndex, columnIndex, childContainer);
 
-			for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
-				Column<T, ?> column = columns.get(columnIndex);
+                DragAndDropCellWidgetUtils.get().maybeMakeDraggableOrDroppable(newCell, value, dndColumn
+                        .getCellDragAndDropBehaviour(), dndColumn.getDraggableOptions(), dndColumn
+                        .getDroppableOptions(), ensureDrangAndDropHandlers());
+            }
+        }
+    }
 
-				if (!(column instanceof DragAndDropColumn<?, ?>)) {
-					continue;
-				}
+    void cleanCellRange(int start, int end, Element childContainer) {
+        for (int rowIndex = start; rowIndex < end; rowIndex++) {
+            for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
+                Element oldCell = getCellWrapperDiv(rowIndex, columnIndex, childContainer);
+                DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
+            }
+        }
+    }
 
-				final DragAndDropColumn<T, ?> dndColumn = (DragAndDropColumn<T, ?>) column;
+    void cleanAllCells(Element childContainer) {
+        // select all first div inside each tr element and clean it
+        $("td > div", childContainer).each(new Function() {
+            @Override
+            public void f(Element div) {
+                DragAndDropCellWidgetUtils.get().cleanCell(div);
+            }
+        });
+    }
 
-				Element newCell = getCellWrapperDiv(rowIndex, columnIndex, childContainer);
+    private Element getCellWrapperDiv(int rowIndex, int columnIndex, Element childContainer) {
+        TableSectionElement tbody = childContainer.cast();
+        int rowsNbr = tbody.getRows().getLength();
 
-				DragAndDropCellWidgetUtils.get().maybeMakeDraggableOrDroppable(
-						newCell, value,
-						dndColumn.getCellDragAndDropBehaviour(),
-						dndColumn.getDraggableOptions(),
-						dndColumn.getDroppableOptions(),
-						ensureDrangAndDropHandlers());
+        if (rowIndex < rowsNbr) {
+            TableRowElement row = tbody.getRows().getItem(rowIndex);
+            int columnNbr = row.getCells().getLength();
+            if (columnIndex < columnNbr) {
+                return row.getCells().getItem(columnIndex).getFirstChildElement();
+            }
+        }
 
-			}
-		}
-
-	}
-
-	void cleanCellRange(int start, int end, Element childContainer){
-		
-		for (int rowIndex = start; rowIndex < end; rowIndex++) {
-			for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
-				Element oldCell = getCellWrapperDiv(rowIndex, columnIndex, childContainer);
-				DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
-			}
-
-		}
-		
-	}
-
-	 void cleanAllCells(Element childContainer) {
-		// select all first div inside each tr element and clean it
-		$("td > div", childContainer).each(new Function() {
-			@Override
-			public void f(Element div) {
-				DragAndDropCellWidgetUtils.get().cleanCell(div);
-			}
-		});
-
-	}
-
-	private Element getCellWrapperDiv(int rowIndex, int columnIndex, Element childContainer) {
-		TableSectionElement tbody = childContainer.cast();
-		int rowsNbr = tbody.getRows().getLength();
-		if (rowIndex < rowsNbr) {
-			TableRowElement row = tbody.getRows().getItem(rowIndex);
-			int columnNbr = row.getCells().getLength();
-			if (columnIndex < columnNbr) {
-				return row.getCells().getItem(columnIndex)
-						.getFirstChildElement();
-			}
-		}
-		return null;
-	}
-
+        return null;
+    }
 }

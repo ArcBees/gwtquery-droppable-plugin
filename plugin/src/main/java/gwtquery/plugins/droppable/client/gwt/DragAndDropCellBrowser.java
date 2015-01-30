@@ -16,6 +16,7 @@
 package gwtquery.plugins.droppable.client.gwt;
 
 import static com.google.gwt.query.client.GQuery.$;
+
 import gwtquery.plugins.draggable.client.DraggableOptions;
 import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent;
 import gwtquery.plugins.draggable.client.events.BeforeDragStartEvent.BeforeDragStartEventHandler;
@@ -58,289 +59,258 @@ import com.google.gwt.view.client.TreeViewModel.NodeInfo;
 /**
  * This cell browser allows you to define draggable and or droppable cells by
  * using {@link DragAndDropNodeInfo}.
- * 
  */
 public class DragAndDropCellBrowser extends CellBrowser {
+    protected class DragAndDropBrowserCellList<T> extends BrowserCellList<T> {
+        /**
+         * {@link CellDragAndDropBehaviour} used to determine if cells have to be
+         * droppable and/or draggable
+         */
+        private CellDragAndDropBehaviour<T> cellDragAndDropBehaviour;
+        /**
+         * The options used for draggable cells.
+         */
+        private DraggableOptions draggableOptions;
+        /**
+         * The options used for droppable cells.
+         */
+        private DroppableOptions droppableOptions;
 
-  protected class DragAndDropBrowserCellList<T> extends BrowserCellList<T> {
-
-    /**
-     * {@link CellDragAndDropBehaviour} used to determine if cells have to be
-     * droppable and/or draggable
-     */
-    private CellDragAndDropBehaviour<T> cellDragAndDropBehaviour;
-
-    /**
-     * The options used for draggable cells.
-     */
-    private DraggableOptions draggableOptions;
-
-    /**
-     * The options used for droppable cells.
-     */
-    private DroppableOptions droppableOptions;
-
-    public DragAndDropBrowserCellList(final Cell<T> cell, int level,
-        ProvidesKey<T> keyProvider) {
-      super(cell, level, keyProvider);
-    }
-
-    /**
-     * 
-     * @return the {@link CellDragAndDropBehaviour}
-     */
-    public CellDragAndDropBehaviour<T> getCellDragAndDropBehaviour() {
-      return cellDragAndDropBehaviour;
-    }
-
-    /**
-     * 
-     * @return the {@link DraggableOptions} used to make cells draggable
-     */
-    public DraggableOptions getDraggableOptions() {
-      return draggableOptions;
-    }
-
-    /**
-     * 
-     * @return the {@link DroppableOptions} used to make cells droppable
-     */
-    public DroppableOptions getDroppableOptions() {
-      return droppableOptions;
-    }
-
-    /**
-     * Set the {@link CellDragAndDropBehaviour}. If null is given, all cells
-     * will be draggable and droppable
-     * 
-     * @param cellDragAndDropBehaviour
-     */
-    public void setCellDragAndDropBehaviour(
-        CellDragAndDropBehaviour<T> cellDragAndDropBehaviour) {
-      this.cellDragAndDropBehaviour = cellDragAndDropBehaviour;
-    }
-
-    /**
-     * Set the {@link DraggableOptions} used to make cells draggable
-     */
-    public void setDraggableOptions(DraggableOptions draggableOptions) {
-      this.draggableOptions = draggableOptions;
-    }
-
-    /**
-     * Set the {@link DroppableOptions} used to make cells droppable
-     */
-    public void setDroppableOptions(DroppableOptions droppableOptions) {
-      this.droppableOptions = droppableOptions;
-    }
-
-    protected void addDragAndDropBehaviour(List<T> values, int start) {
-
-      int end = start + values.size();
-
-      for (int rowIndex = start; rowIndex < end; rowIndex++) {
-        T value = values.get(rowIndex - start);
-        Element newCell = getRowElement(rowIndex);
-
-        DragAndDropCellWidgetUtils.get().maybeMakeDraggableOrDroppable(newCell,
-            value, cellDragAndDropBehaviour, draggableOptions,
-            droppableOptions, ensureDragAndDropHandlers());
-      }
-
-    }
-
-    protected final <H extends EventHandler> HandlerRegistration addDragAndDropHandler(
-        H handler, Type<H> type) {
-      return ensureDragAndDropHandlers().addHandler(type, handler);
-    }
-
-    protected void cleanAllCells() {
-      $(getChildContainer()).children().each(new Function() {
-        @Override
-        public void f(Element div) {
-          DragAndDropCellWidgetUtils.get().cleanCell(div);
+        public DragAndDropBrowserCellList(final Cell<T> cell, int level, ProvidesKey<T> keyProvider) {
+            super(cell, level, keyProvider);
         }
-      });
 
+        /**
+         * @return the {@link CellDragAndDropBehaviour}
+         */
+        public CellDragAndDropBehaviour<T> getCellDragAndDropBehaviour() {
+            return cellDragAndDropBehaviour;
+        }
+
+        /**
+         * @return the {@link DraggableOptions} used to make cells draggable
+         */
+        public DraggableOptions getDraggableOptions() {
+            return draggableOptions;
+        }
+
+        /**
+         * @return the {@link DroppableOptions} used to make cells droppable
+         */
+        public DroppableOptions getDroppableOptions() {
+            return droppableOptions;
+        }
+
+        /**
+         * Set the {@link CellDragAndDropBehaviour}. If null is given, all cells
+         * will be draggable and droppable
+         *
+         * @param cellDragAndDropBehaviour
+         */
+        public void setCellDragAndDropBehaviour(CellDragAndDropBehaviour<T> cellDragAndDropBehaviour) {
+            this.cellDragAndDropBehaviour = cellDragAndDropBehaviour;
+        }
+
+        /**
+         * Set the {@link DraggableOptions} used to make cells draggable
+         */
+        public void setDraggableOptions(DraggableOptions draggableOptions) {
+            this.draggableOptions = draggableOptions;
+        }
+
+        /**
+         * Set the {@link DroppableOptions} used to make cells droppable
+         */
+        public void setDroppableOptions(DroppableOptions droppableOptions) {
+            this.droppableOptions = droppableOptions;
+        }
+
+        protected void addDragAndDropBehaviour(List<T> values, int start) {
+
+            int end = start + values.size();
+
+            for (int rowIndex = start; rowIndex < end; rowIndex++) {
+                T value = values.get(rowIndex - start);
+                Element newCell = getRowElement(rowIndex);
+
+                DragAndDropCellWidgetUtils.get().maybeMakeDraggableOrDroppable(newCell, value,
+                        cellDragAndDropBehaviour, draggableOptions, droppableOptions, ensureDragAndDropHandlers());
+            }
+        }
+
+        protected final <H extends EventHandler> HandlerRegistration addDragAndDropHandler(H handler, Type<H> type) {
+            return ensureDragAndDropHandlers().addHandler(type, handler);
+        }
+
+        protected void cleanAllCells() {
+            $(getChildContainer()).children().each(new Function() {
+                @Override
+                public void f(Element div) {
+                    DragAndDropCellWidgetUtils.get().cleanCell(div);
+                }
+            });
+        }
+
+        @Override
+        protected void onUnload() {
+
+            cleanAllCells();
+            super.onUnload();
+        }
+
+        @Override
+        protected void replaceAllChildren(List<T> values, SafeHtml html) {
+            // first clean old cell before remove it
+            cleanAllCells();
+
+            // lets the super class replace all child
+            super.replaceAllChildren(values, html);
+
+            // make the new cell draggable or droppable
+            addDragAndDropBehaviour(values, 0);
+        }
+
+        @Override
+        protected void replaceChildren(List<T> values, int start, SafeHtml html) {
+            // clean cell has being replaced
+            int end = start + values.size();
+            for (int rowIndex = start; rowIndex < end; rowIndex++) {
+                Element oldCell = getRowElement(rowIndex);
+                DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
+            }
+
+            // lets the super class replace all child
+            super.replaceChildren(values, start, html);
+
+            // make the new cell draggable or droppable
+            addDragAndDropBehaviour(values, start);
+        }
     }
 
+    private EventBus dragAndDropHandlerManager;
+
+    /**
+     * Construct a new {@link CellBrowser}.
+     *
+     * @param <T>       the type of data in the root node
+     * @param viewModel the {@link TreeViewModel} that backs the tree
+     * @param rootValue the hidden root value of the tree
+     */
+    public <T> DragAndDropCellBrowser(TreeViewModel viewModel, T rootValue) {
+        this(viewModel, rootValue, getDefaultResources());
+    }
+
+    public <T> DragAndDropCellBrowser(TreeViewModel viewModel, T rootValue, Resources resources) {
+        super(new Builder<T>(viewModel, rootValue).resources(resources));
+    }
+
+    protected <T> DragAndDropCellBrowser(Builder<T> builder) {
+        super(builder);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link ActivateDroppableEvent}
+     * event. This kind of event is fired each time a droppable cell is activated.
+     */
+    public HandlerRegistration addActivateDroppableHandler(ActivateDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, ActivateDroppableEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link BeforeDragStartEvent}
+     * event. this kind of event is fired before the initialization of the drag
+     * operation.
+     */
+    public HandlerRegistration addBeforeDragHandler(BeforeDragStartEventHandler handler) {
+        return addDragAndDropHandler(handler, BeforeDragStartEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link DeactivateDroppableEvent}
+     * event. This kind of event is fired each time a droppable cell is
+     * deactivated.
+     */
+    public HandlerRegistration addDeactivateDroppableHandler(DeactivateDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, DeactivateDroppableEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link DragEvent} event. this
+     * kind of event is fired while a cell is being dragged
+     */
+    public HandlerRegistration addDragHandler(DragEventHandler handler) {
+        return addDragAndDropHandler(handler, DragEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link DragStartEvent} event.
+     * This kind of event is fired when the drag operation starts.
+     */
+    public HandlerRegistration addDragStartHandler(DragStartEventHandler handler) {
+        return addDragAndDropHandler(handler, DragStartEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link DragStopEvent} event. This
+     * kind of event is fired when the drag operation stops.
+     */
+    public HandlerRegistration addDragStopHandler(DragStopEventHandler handler) {
+        return addDragAndDropHandler(handler, DragStopEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link DropEvent} event. This
+     * kind of event is fired when an acceptable draggable is drop on a droppable
+     * cell.
+     */
+    public HandlerRegistration addDropHandler(DropEventHandler handler) {
+        return addDragAndDropHandler(handler, DropEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link OutDroppableEvent} event.
+     * This kind of event is fired when an acceptable draggable is being dragged
+     * out of a droppable cell.
+     */
+    public HandlerRegistration addOutDroppableHandler(OutDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, OutDroppableEvent.TYPE);
+    }
+
+    /**
+     * Add a handler object that will manage the {@link OverDroppableEvent} event.
+     * This kind of event is fired when an acceptable draggable is being dragged
+     * over a droppable cell.
+     */
+    public HandlerRegistration addOverDroppableHandler(OverDroppableEventHandler handler) {
+        return addDragAndDropHandler(handler, OverDroppableEvent.TYPE);
+    }
+
+    protected final <H extends EventHandler> HandlerRegistration addDragAndDropHandler(H handler, Type<H> type) {
+        return ensureDragAndDropHandlers().addHandler(type, handler);
+    }
+
+    /**
+     * Create a {@link HasData} that will display items. The {@link HasData} must
+     * extend {@link Widget}.
+     *
+     * @param <C>      the item type in the list view
+     * @param nodeInfo the node info with child data
+     * @param level    the level of the list
+     * @return the {@link HasData}
+     */
     @Override
-    protected void onUnload() {
+    protected <C> BrowserCellList<C> createDisplay(NodeInfo<C> nodeInfo, int level) {
+        DragAndDropBrowserCellList<C> display = new DragAndDropBrowserCellList<C>(nodeInfo.getCell(), level, nodeInfo
+                .getProvidesKey());
 
-      cleanAllCells();
-      super.onUnload();
-    }
+        if (getLoadingIndicator() != null) {
+            display.setLoadingIndicator(getLoadingIndicator());
+        }
+        if (getPageSize() != null) {
+            display.setPageSize(getPageSize());
+        }
 
-    @Override
-    protected void replaceAllChildren(List<T> values, SafeHtml html) {
-      // first clean old cell before remove it
-      cleanAllCells();
-
-      // lets the super class replace all child
-      super.replaceAllChildren(values, html);
-
-      // make the new cell draggable or droppable
-      addDragAndDropBehaviour(values, 0);
-
-    }
-
-    @Override
-    protected void replaceChildren(List<T> values, int start, SafeHtml html) {
-      // clean cell has being replaced
-      int end = start + values.size();
-      for (int rowIndex = start; rowIndex < end; rowIndex++) {
-        Element oldCell = getRowElement(rowIndex);
-        DragAndDropCellWidgetUtils.get().cleanCell(oldCell);
-      }
-
-      // lets the super class replace all child
-      super.replaceChildren(values, start, html);
-
-      // make the new cell draggable or droppable
-      addDragAndDropBehaviour(values, start);
-
-    }
-
-  }
-
-  private EventBus dragAndDropHandlerManager;
-
-  /**
-   * Construct a new {@link CellBrowser}.
-   * 
-   * @param <T>
-   *          the type of data in the root node
-   * @param viewModel
-   *          the {@link TreeViewModel} that backs the tree
-   * @param rootValue
-   *          the hidden root value of the tree
-   */
-  public <T> DragAndDropCellBrowser(TreeViewModel viewModel, T rootValue) {
-    this(viewModel, rootValue, getDefaultResources());
-  }
-
-  public <T> DragAndDropCellBrowser(TreeViewModel viewModel, T rootValue,
-      Resources resources) {
-    super(new Builder<T>(viewModel, rootValue).resources(resources));
-  }
-  
-  protected <T> DragAndDropCellBrowser(Builder<T> builder) {
-	  super(builder);
-	  
-  }
-
-  /**
-   * Add a handler object that will manage the {@link ActivateDroppableEvent}
-   * event. This kind of event is fired each time a droppable cell is activated.
-   */
-  public HandlerRegistration addActivateDroppableHandler(
-      ActivateDroppableEventHandler handler) {
-    return addDragAndDropHandler(handler, ActivateDroppableEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link BeforeDragStartEvent}
-   * event. this kind of event is fired before the initialization of the drag
-   * operation.
-   */
-  public HandlerRegistration addBeforeDragHandler(
-      BeforeDragStartEventHandler handler) {
-    return addDragAndDropHandler(handler, BeforeDragStartEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link DeactivateDroppableEvent}
-   * event. This kind of event is fired each time a droppable cell is
-   * deactivated.
-   */
-  public HandlerRegistration addDeactivateDroppableHandler(
-      DeactivateDroppableEventHandler handler) {
-    return addDragAndDropHandler(handler, DeactivateDroppableEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link DragEvent} event. this
-   * kind of event is fired while a cell is being dragged
-   */
-  public HandlerRegistration addDragHandler(DragEventHandler handler) {
-    return addDragAndDropHandler(handler, DragEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link DragStartEvent} event.
-   * This kind of event is fired when the drag operation starts.
-   */
-  public HandlerRegistration addDragStartHandler(DragStartEventHandler handler) {
-    return addDragAndDropHandler(handler, DragStartEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link DragStopEvent} event. This
-   * kind of event is fired when the drag operation stops.
-   */
-  public HandlerRegistration addDragStopHandler(DragStopEventHandler handler) {
-    return addDragAndDropHandler(handler, DragStopEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link DropEvent} event. This
-   * kind of event is fired when an acceptable draggable is drop on a droppable
-   * cell.
-   */
-  public HandlerRegistration addDropHandler(DropEventHandler handler) {
-    return addDragAndDropHandler(handler, DropEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link OutDroppableEvent} event.
-   * This kind of event is fired when an acceptable draggable is being dragged
-   * out of a droppable cell.
-   */
-  public HandlerRegistration addOutDroppableHandler(
-      OutDroppableEventHandler handler) {
-    return addDragAndDropHandler(handler, OutDroppableEvent.TYPE);
-  }
-
-  /**
-   * Add a handler object that will manage the {@link OverDroppableEvent} event.
-   * This kind of event is fired when an acceptable draggable is being dragged
-   * over a droppable cell.
-   */
-  public HandlerRegistration addOverDroppableHandler(
-      OverDroppableEventHandler handler) {
-    return addDragAndDropHandler(handler, OverDroppableEvent.TYPE);
-  }
-
-  protected final <H extends EventHandler> HandlerRegistration addDragAndDropHandler(
-      H handler, Type<H> type) {
-    return ensureDragAndDropHandlers().addHandler(type, handler);
-  }
-
-  /**
-   * Create a {@link HasData} that will display items. The {@link HasData} must
-   * extend {@link Widget}.
-   * 
-   * @param <C>
-   *          the item type in the list view
-   * @param nodeInfo
-   *          the node info with child data
-   * @param level
-   *          the level of the list
-   * @return the {@link HasData}
-   */
-  @Override
-  protected <C> BrowserCellList<C> createDisplay(NodeInfo<C> nodeInfo, int level) {
-    DragAndDropBrowserCellList<C> display = new DragAndDropBrowserCellList<C>(
-        nodeInfo.getCell(), level, nodeInfo.getProvidesKey());
-
-    if (getLoadingIndicator() != null) {
-        display.setLoadingIndicator(getLoadingIndicator());
-    }
-    if (getPageSize() != null) {
-        display.setPageSize(getPageSize());
-    }
-      
-    display.setValueUpdater(nodeInfo.getValueUpdater());
+        display.setValueUpdater(nodeInfo.getValueUpdater());
 
     /*
      * A CellBrowser has a single keyboard selection policy and multiple lists,
@@ -348,25 +318,23 @@ public class DragAndDropCellBrowser extends CellBrowser {
      * the time because we use keyboard selection to keep track of which item is
      * open (selected) at each level.
      */
-    display.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        display.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
     /*
      * Drag and drop stuff
      */
-    if (nodeInfo instanceof DragAndDropNodeInfo<?>) {
-      DragAndDropNodeInfo<C> dndNodeInfo = (DragAndDropNodeInfo<C>) nodeInfo;
-      display.setCellDragAndDropBehaviour(dndNodeInfo
-          .getCellDragAndDropBehaviour());
-      display.setDraggableOptions(dndNodeInfo.getDraggableOptions());
-      display.setDroppableOptions(dndNodeInfo.getDroppableOptions());
+        if (nodeInfo instanceof DragAndDropNodeInfo<?>) {
+            DragAndDropNodeInfo<C> dndNodeInfo = (DragAndDropNodeInfo<C>) nodeInfo;
+            display.setCellDragAndDropBehaviour(dndNodeInfo.getCellDragAndDropBehaviour());
+            display.setDraggableOptions(dndNodeInfo.getDraggableOptions());
+            display.setDroppableOptions(dndNodeInfo.getDroppableOptions());
+        }
+        return display;
     }
-    return display;
-  }
 
-  protected EventBus ensureDragAndDropHandlers() {
+    protected EventBus ensureDragAndDropHandlers() {
 
-    return dragAndDropHandlerManager == null ? dragAndDropHandlerManager = new SimpleEventBus()
-        : dragAndDropHandlerManager;
-  }
-
+        return dragAndDropHandlerManager == null ? dragAndDropHandlerManager = new SimpleEventBus() :
+                dragAndDropHandlerManager;
+    }
 }

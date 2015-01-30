@@ -15,27 +15,21 @@
  */
 package gwtquery.plugins.droppable.client.events;
 
-
 import com.google.gwt.event.shared.HandlerRegistration;
-
 import gwtquery.plugins.droppable.client.events.ActivateDroppableEvent.ActivateDroppableEventHandler;
 
 /**
  * A widget that implements this interface provides registration for
  * {@link ActivateDroppableEventHandler} instances.
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
 public interface HasActivateDroppableHandler {
-
-  /**
-   * Adds a {@link ActivateDroppableEventHandler} handler.
-   * 
-   * @param handler
-   *          the drag handler
-   * @return {@link HandlerRegistration} used to remove this handler
-   */
-  HandlerRegistration addActivateDroppableHandler(ActivateDroppableEventHandler handler);
-
+    /**
+     * Adds a {@link ActivateDroppableEventHandler} handler.
+     *
+     * @param handler the drag handler
+     * @return {@link HandlerRegistration} used to remove this handler
+     */
+    HandlerRegistration addActivateDroppableHandler(ActivateDroppableEventHandler handler);
 }
