@@ -17,40 +17,35 @@ package gwtquery.plugins.droppable.client.events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
-
 import gwtquery.plugins.draggable.client.events.DragContext;
 
 /**
  * Event fired when an acceptable draggable is being dragged out of the droppable.
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
-public class OutDroppableEvent extends
-    AbstractDroppableEvent<OutDroppableEvent.OutDroppableEventHandler> {
+public class OutDroppableEvent extends AbstractDroppableEvent<OutDroppableEvent.OutDroppableEventHandler> {
+    public interface OutDroppableEventHandler extends EventHandler {
+        public void onOutDroppable(OutDroppableEvent event);
+    }
 
-  public interface OutDroppableEventHandler extends EventHandler {
-    public void onOutDroppable(OutDroppableEvent event);
-  }
+    public static Type<OutDroppableEventHandler> TYPE = new Type<OutDroppableEventHandler>();
 
-  public static Type<OutDroppableEventHandler> TYPE = new Type<OutDroppableEventHandler>();
+    public OutDroppableEvent(DragAndDropContext ctx) {
+        super(ctx);
+    }
 
-  public OutDroppableEvent(DragAndDropContext ctx) {
-    super(ctx);
-  }
+    public OutDroppableEvent(Element droppable, DragContext dragCtx) {
+        super(droppable, dragCtx);
+    }
 
-  public OutDroppableEvent(Element droppable, DragContext dragCtx) {
-    super(droppable, dragCtx);
-  }
+    @Override
+    public Type<OutDroppableEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-  @Override
-  public Type<OutDroppableEventHandler> getAssociatedType() {
-    return TYPE;
-  }
-
-  @Override
-  protected void dispatch(OutDroppableEventHandler handler) {
-    handler.onOutDroppable(this);
-  }
-
+    @Override
+    protected void dispatch(OutDroppableEventHandler handler) {
+        handler.onOutDroppable(this);
+    }
 }

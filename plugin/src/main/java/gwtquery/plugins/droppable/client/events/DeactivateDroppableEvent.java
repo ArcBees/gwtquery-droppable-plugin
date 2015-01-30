@@ -17,40 +17,36 @@ package gwtquery.plugins.droppable.client.events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
-
 import gwtquery.plugins.draggable.client.events.DragContext;
 
 /**
  * Event fired when a droppable element is deactivated.
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
 public class DeactivateDroppableEvent
-    extends
-    AbstractDroppableEvent<DeactivateDroppableEvent.DeactivateDroppableEventHandler> {
+        extends AbstractDroppableEvent<DeactivateDroppableEvent.DeactivateDroppableEventHandler> {
+    public interface DeactivateDroppableEventHandler extends EventHandler {
+        public void onDeactivateDroppable(DeactivateDroppableEvent event);
+    }
 
-  public interface DeactivateDroppableEventHandler extends EventHandler {
-    public void onDeactivateDroppable(DeactivateDroppableEvent event);
-  }
+    public static Type<DeactivateDroppableEventHandler> TYPE = new Type<DeactivateDroppableEventHandler>();
 
-  public static Type<DeactivateDroppableEventHandler> TYPE = new Type<DeactivateDroppableEventHandler>();
+    public DeactivateDroppableEvent(DragAndDropContext ctx) {
+        super(ctx);
+    }
 
-  public DeactivateDroppableEvent(DragAndDropContext ctx) {
-    super(ctx);
-  }
+    public DeactivateDroppableEvent(Element droppable, DragContext dragCtx) {
+        super(droppable, dragCtx);
+    }
 
-  public DeactivateDroppableEvent(Element droppable, DragContext dragCtx) {
-    super(droppable, dragCtx);
-  }
+    @Override
+    public Type<DeactivateDroppableEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-  @Override
-  public Type<DeactivateDroppableEventHandler> getAssociatedType() {
-    return TYPE;
-  }
-
-  @Override
-  protected void dispatch(DeactivateDroppableEventHandler handler) {
-    handler.onDeactivateDroppable(this);
-  }
+    @Override
+    protected void dispatch(DeactivateDroppableEventHandler handler) {
+        handler.onDeactivateDroppable(this);
+    }
 }
