@@ -35,9 +35,7 @@ import gwtquery.plugins.droppable.client.events.DragAndDropContext;
  * 
  */
 public class MultiDropSample implements EntryPoint {
-
   public void onModuleLoad() {
-
     DraggableOptions dragOptions = new DraggableOptions();
     dragOptions.setMultipleSelection(true);
     dragOptions.setGroupingMode(GroupingMode.DOWN);
@@ -58,16 +56,12 @@ public class MultiDropSample implements EntryPoint {
         text.append("was dropped on me !");
         $(context.getDroppable()).addClass("orange-background").find("p").html(
             text.toString());
-
       }
     });
-    
+
     options.setDraggableHoverClass("yellow-background");
     
     //make the element droppable
     $("#droppable").as(Droppable).droppable(options);
   }
-
-  
-
 }

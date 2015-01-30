@@ -150,7 +150,4 @@ public abstract class AbstractDroppableEvent<H extends EventHandler> extends
     assert dragAndDropContext != null : "DragAndDropContext cannot be null";
     return dragAndDropContext.getInitialDraggable();
   }
-
-  
-  
 }
