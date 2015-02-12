@@ -15,7 +15,6 @@
  */
 package gwtquery.plugins.droppable.client.events;
 
-
 /**
  * A widget that implements this interface provides registration for
  * {@link HasActivateDroppableHandler} instances,
@@ -23,12 +22,9 @@ package gwtquery.plugins.droppable.client.events;
  * {@link HasDropHandler} instances,
  * {@link HasOutDroppableHandler} instances and
  * {@link HasOverDroppableHandler} instances.
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
-public interface HasAllDropHandler extends HasActivateDroppableHandler,
-    HasDeactivateDroppableHandler, HasDropHandler, HasOutDroppableHandler,
-    HasOverDroppableHandler {
-
+public interface HasAllDropHandler extends HasActivateDroppableHandler, HasDeactivateDroppableHandler,
+        HasDropHandler, HasOutDroppableHandler, HasOverDroppableHandler {
 }

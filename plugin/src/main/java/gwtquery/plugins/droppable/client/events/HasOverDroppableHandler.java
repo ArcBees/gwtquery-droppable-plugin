@@ -15,27 +15,21 @@
  */
 package gwtquery.plugins.droppable.client.events;
 
-
 import com.google.gwt.event.shared.HandlerRegistration;
-
 import gwtquery.plugins.droppable.client.events.OverDroppableEvent.OverDroppableEventHandler;
 
 /**
  * A widget that implements this interface provides registration for
  * {@link OverDroppableEventHandler} instances.
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
 public interface HasOverDroppableHandler {
-
-  /**
-   * Adds a {@link OverDroppableEventHandler} handler.
-   * 
-   * @param handler
-   *          the drag handler
-   * @return {@link HandlerRegistration} used to remove this handler
-   */
-  HandlerRegistration addOverDroppableHandler(OverDroppableEventHandler handler);
-
+    /**
+     * Adds a {@link OverDroppableEventHandler} handler.
+     *
+     * @param handler the drag handler
+     * @return {@link HandlerRegistration} used to remove this handler
+     */
+    HandlerRegistration addOverDroppableHandler(OverDroppableEventHandler handler);
 }

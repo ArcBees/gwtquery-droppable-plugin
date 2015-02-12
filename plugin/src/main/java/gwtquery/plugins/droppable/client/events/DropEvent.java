@@ -17,40 +17,35 @@ package gwtquery.plugins.droppable.client.events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
-
 import gwtquery.plugins.draggable.client.events.DragContext;
 
 /**
  * Event fired when an acceptable draggable is dropped on a droppable.
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
  */
-public class DropEvent extends
-    AbstractDroppableEvent<DropEvent.DropEventHandler> {
+public class DropEvent extends AbstractDroppableEvent<DropEvent.DropEventHandler> {
+    public interface DropEventHandler extends EventHandler {
+        public void onDrop(DropEvent event);
+    }
 
-  public interface DropEventHandler extends EventHandler {
-    public void onDrop(DropEvent event);
-  }
+    public static Type<DropEventHandler> TYPE = new Type<DropEventHandler>();
 
-  public static Type<DropEventHandler> TYPE = new Type<DropEventHandler>();
+    public DropEvent(DragAndDropContext ctx) {
+        super(ctx);
+    }
 
-  public DropEvent(DragAndDropContext ctx) {
-    super(ctx);
-  }
+    public DropEvent(Element droppable, DragContext dragCtx) {
+        super(droppable, dragCtx);
+    }
 
-  public DropEvent(Element droppable, DragContext dragCtx) {
-    super(droppable, dragCtx);
-  }
+    @Override
+    public Type<DropEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-  @Override
-  public Type<DropEventHandler> getAssociatedType() {
-    return TYPE;
-  }
-
-  @Override
-  protected void dispatch(DropEventHandler handler) {
-    handler.onDrop(this);
-  }
-
+    @Override
+    protected void dispatch(DropEventHandler handler) {
+        handler.onDrop(this);
+    }
 }
