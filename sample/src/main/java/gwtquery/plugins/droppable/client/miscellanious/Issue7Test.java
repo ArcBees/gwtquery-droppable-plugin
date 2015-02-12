@@ -36,7 +36,7 @@ public class Issue7Test implements EntryPoint {
         
         public void f(DragAndDropContext context) {
           $("#droppable3,#droppable2").show();
-          DragAndDropManager.getInstance().update();
+          DragAndDropManager.getInstance().update(context);
         }
       });
     }

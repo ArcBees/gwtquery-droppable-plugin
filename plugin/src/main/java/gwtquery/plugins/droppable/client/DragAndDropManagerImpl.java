@@ -30,19 +30,19 @@ import java.util.Map;
 
 import gwtquery.plugins.draggable.client.DragAndDropManager;
 import gwtquery.plugins.draggable.client.DraggableHandler;
+import gwtquery.plugins.draggable.client.events.DragContext;
 import gwtquery.plugins.droppable.client.Droppable.CssClassNames;
 import gwtquery.plugins.droppable.client.DroppableOptions.AcceptFunction;
 import gwtquery.plugins.droppable.client.events.DragAndDropContext;
 
 /**
  * Implementation of the {@link DragAndDropManager} for drop operations
- * 
+ *
  * @author Julien Dramaix (julien.dramaix@gmail.com)
- * 
+ *
  */
 public class DragAndDropManagerImpl extends DragAndDropManager {
 
-  private Element currentDraggable;
   private Map<String, Collection<Element>> droppablesByScope;
 
   public DragAndDropManagerImpl() {
@@ -53,7 +53,7 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
   /**
    * Link a droppable with the specified scope <code>scope</code>
-   * 
+   *
    * @param droppable
    * @param scope
    */
@@ -69,12 +69,13 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
   /**
    * Method called when the draggable is being dragged
-   * 
-   * @param draggable
+   *
+   * @param ctx
    * @param e
    */
   @Override
-  public void drag(Element draggable, GqEvent e) {
+  public void drag(DragContext ctx, GqEvent e) {
+    Element draggable = ctx.getDraggable();
     DraggableHandler draggableHandler = DraggableHandler.getInstance(draggable);
     Collection<Element> droppables = getDroppablesByScope(draggableHandler
         .getOptions().getScope());
@@ -84,22 +85,25 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
 
     for (Element droppable : droppables) {
       DroppableHandler dropHandler = DroppableHandler.getInstance(droppable);
-      dropHandler.drag(droppable, draggable, e);
+      DragAndDropContext dndContext = new DragAndDropContext(ctx, droppable);
+      dropHandler.drag(dndContext, e);
 
     }
   }
 
   /**
    * Method called when the draggable was dropped
-   * 
-   * @param draggable
+   *
+   * @param ctx
    * @param e
    * @return
    */
   @Override
-  public boolean drop(Element draggable, GqEvent e) {
+  public boolean drop(DragContext ctx, GqEvent e) {
+    Element draggable = ctx.getDraggable();
     boolean dropped = false;
     DraggableHandler draggableHandler = DraggableHandler.getInstance(draggable);
+
     Collection<Element> droppables = getDroppablesByScope(draggableHandler
         .getOptions().getScope());
     if (droppables == null || droppables.size() == 0) {
@@ -109,25 +113,16 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
     for (Element droppable : droppables) {
       DroppableHandler droppableHandler = DroppableHandler
           .getInstance(droppable);
-      dropped |= droppableHandler.drop(droppable, draggable, e, dropped);
+      DragAndDropContext dndContext = new DragAndDropContext(ctx, droppable);
+      dropped |= droppableHandler.drop(dndContext, dropped, e);
     }
 
     return dropped;
   }
 
   /**
-   * 
-   * @return the current draggable element or null if no drag operation in
-   *         progress
-   */
-  @Override
-  public Element getCurrentDraggable() {
-    return currentDraggable;
-  }
-
-  /**
    * Return the list of droppable elements with the scope <code>scope</code>
-   * 
+   *
    * @param scope
    * @return
    */
@@ -137,7 +132,8 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
   }
 
   @Override
-  public void initialize(Element draggable, GqEvent e) {
+  public void initialize(DragContext ctx, GqEvent e) {
+    Element draggable = ctx.getDraggable();
     DraggableHandler draggableHandler = DraggableHandler.getInstance(draggable);
     Collection<Element> droppables = getDroppablesByScope(draggableHandler
         .getOptions().getScope());
@@ -156,8 +152,7 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
       DroppableOptions droppableOptions = droppableHandler.getOptions();
       AcceptFunction accept = droppableOptions.getAccept();
       if (droppableOptions.isDisabled()
-          || (accept != null && !accept.acceptDrop(new DragAndDropContext(
-              draggable, droppable)))) {
+          || (accept != null && !accept.acceptDrop(new DragAndDropContext(ctx, droppable)))) {
         continue;
       }
 
@@ -180,31 +175,20 @@ public class DragAndDropManagerImpl extends DragAndDropManager {
         droppableHandler.setDroppableOffset($droppable.offset());
         droppableHandler.setDroppableDimension(new Dimension(droppable));
         if (e == null || e.getTypeInt() == ONMOUSEDOWN) {
-          droppableHandler.activate(droppable, e);
+          DragAndDropContext dndContext = new DragAndDropContext(ctx, droppable);
+          droppableHandler.activate(dndContext, e);
         }
       }
-
     }
-
   }
 
   @Override
-  public boolean isHandleDroppable() {
-    return true;
+  public boolean isHandleDroppable(DragContext ctx) {
+    return ctx.getDraggable() == ctx.getInitialDraggable();
   }
 
-  /**
-   * Set the current draggeble element
-   * 
-   * @param draggable
-   */
   @Override
-  public void setCurrentDraggable(Element draggable) {
-    currentDraggable = draggable;
+  public void update(DragContext ctx) {
+    initialize(ctx, null);
   }
-  
- /* @Override
-  public void update() {
-    initialize(currentDraggable, null);
-  }*/
 }

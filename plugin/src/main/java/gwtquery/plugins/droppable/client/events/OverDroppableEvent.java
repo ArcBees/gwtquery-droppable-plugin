@@ -18,6 +18,8 @@ package gwtquery.plugins.droppable.client.events;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
 
+import gwtquery.plugins.draggable.client.events.DragContext;
+
 /**
  * Event fired when an acceptable draggable is being dragged over a droppable.
  * 
@@ -33,8 +35,8 @@ public class OverDroppableEvent extends
 
   public static Type<OverDroppableEventHandler> TYPE = new Type<OverDroppableEventHandler>();
 
-  public OverDroppableEvent(Element droppable, Element draggable) {
-    super(droppable, draggable);
+  public OverDroppableEvent(Element droppable, DragContext dragCtx) {
+    super(droppable, dragCtx);
   }
 
   public OverDroppableEvent(DragAndDropContext ctx) {

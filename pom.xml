@@ -21,7 +21,7 @@
 
         <gquery.version>1.4.2</gquery.version>
         <gwt.version>2.7.0</gwt.version>
-        <draggable.version>1.0.4</draggable.version>
+        <draggable.version>2.0-SNAPSHOT</draggable.version>
 
         <junit.version>4.12</junit.version>
     </properties>
@@ -77,8 +77,8 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.googlecode.gwtquery.plugins</groupId>
-                <artifactId>draggable-plugin</artifactId>
+                <groupId>com.arcbees.gquery</groupId>
+                <artifactId>draggable</artifactId>
                 <version>${draggable.version}</version>
             </dependency>
         </dependencies>

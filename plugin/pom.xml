@@ -30,8 +30,8 @@
             <artifactId>gwtquery</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.gwtquery.plugins</groupId>
-            <artifactId>draggable-plugin</artifactId>
+            <groupId>com.arcbees.gquery</groupId>
+            <artifactId>draggable</artifactId>
         </dependency>
     </dependencies>
 

@@ -18,6 +18,8 @@ package gwtquery.plugins.droppable.client.events;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
 
+import gwtquery.plugins.draggable.client.events.DragContext;
+
 /**
  * Event fired when a droppable element is deactivated.
  * 
@@ -38,8 +40,8 @@ public class DeactivateDroppableEvent
     super(ctx);
   }
 
-  public DeactivateDroppableEvent(Element droppable, Element draggable) {
-    super(droppable, draggable);
+  public DeactivateDroppableEvent(Element droppable, DragContext dragCtx) {
+    super(droppable, dragCtx);
   }
 
   @Override
