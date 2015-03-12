@@ -72,6 +72,41 @@ public class DragAndDropCellTree extends CellTree {
         super(viewModel, rootValue, resources);
     }
 
+    /**
+     * Construct a new {@link CellTree}.
+     *
+     * @param <T> the type of data in the root node
+     * @param viewModel the {@link TreeViewModel} that backs the tree
+     * @param rootValue the hidden root value of the tree
+     * @param resources the resources used to render the tree
+     * @param messages translation messages. Users should inherit an empty interface from
+     *                 {@link CellTreeMessages} and add annotations needed for their specific
+     *                 translation systems. Then create the new interface with GWT.create and pass
+     *                 as this argument.
+     */
+    public <T> DragAndDropCellTree(TreeViewModel viewModel, T rootValue, Resources resources,
+                        CellTreeMessages messages) {
+        super(viewModel, rootValue, resources, messages);
+    }
+
+    /**
+     * Construct a new {@link CellTree}.
+     *
+     * @param <T> the type of data in the root node
+     * @param viewModel the {@link TreeViewModel} that backs the tree
+     * @param rootValue the hidden root value of the tree
+     * @param resources the resources used to render the tree
+     * @param messages translation messages. Users should inherit an empty interface from
+     *                 {@link CellTreeMessages} and add annotations needed for their specific
+     *                 translation systems. Then create the new interface with GWT.create and pass
+     *                 as this argument.
+     * @param defaultNodeSize default number of children to display beneath each child node
+     */
+    public <T> DragAndDropCellTree(TreeViewModel viewModel, T rootValue, Resources resources,
+                        CellTreeMessages messages, int defaultNodeSize) {
+        super(viewModel, rootValue, resources, messages, defaultNodeSize);
+    }
+
     @Override
     protected <T> CellTreeNodeView<T> createTreeNodeView(T rootValue, CellTreeMessages messages) {
         return new DragAndDropCellTreeNodeView<T>(this, null, null, getElement(), rootValue, messages);
